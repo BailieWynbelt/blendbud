@@ -5,23 +5,88 @@
     <meta name="description" content="Introduction quiz to gain user information">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="stylesheet.css">
+    <script src="https://kit.fontawesome.com/3e4426112a.js" crossorigin="anonymous"></script>
     <title>BlendBud</title>
 </head>
 <body>
     <section class="header">
         <nav>
+            <div class="logo">
+                <h1>LOGO PLACEHOLDER</h1>
+            </div>
             <div class="nav-links">
                 <ul>
-                    <li><a href="home.html">Home</a></li>
-                    <li><a href="search.html">Search</a></li>
-                    <li><a href="suggestions.html">Wine Suggestions</a></li>
-                    <li><a href="profile.html">Profile</a></li>
+                    <li><a href="login.html">LOG IN</a></li>
+                    <li><a href="login.html">SIGN UP</a></li>
+                    <li><a href="profile.html">PROFILE</a></li>
                 </ul>
             </div>
         </nav>
-        <div class="text-box">
-            <h1>Home Page</h1>
+        <div class = "page-selection">
+            <div class = button-selection>
+                <i class="fa-solid fa-house"></i>
+                <a href="home.html"><button class="home-selection">Home</button></a>
+            </div>
+            <div class = button-selection>
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <a href="search.html"><button class="search-selection">Search</button></a>
+            </div>
+            <div class = button-selection>
+                <i class="fa-solid fa-champagne-glasses"></i>
+                <a href="community.html"><button class="community-selection">Community</button></a>
+            </div>
         </div>
     </section>
+    <section class = "welcome-section">
+        <h2>Welcome // Quote // Mission</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt 
+            ut labore et dolore magna aliqua. Lacus laoreet non curabitur gravida. Sit amet nisl purus in mollis.
+            Quam viverra orci sagittis eu volutpat odio facilisis mauris sit. Aliquam eleifend mi in nulla posuere 
+            sollicitudin aliquam ultrices. Placerat in egestas erat imperdiet sed euismod nisi. Ipsum dolor sit amet
+            consectetur. Augue neque gravida in fermentum. At elementum eu facilisis sed odio morbi quis commodo. 
+            Adipiscing elit duis tristique sollicitudin nibh.</p>
+    </section>
+    <section class="suggestions-section">
+    <h2>Suggestions for you</h2>
+    <div class="suggestion-box">
+      <img src="images/winebottle.png" alt="Suggestion 1">
+    </div>
+    <div class="suggestion-box">
+      <img src="images/winebottle.png" alt="Suggestion 2">
+    </div>
+    <div class="suggestion-box">
+      <img src="images/winebottle.png" alt="Suggestion 3">
+    </div>
+    <div class="suggestion-box">
+      <img src="images/winebottle.png" alt="Suggestion 4">
+    </div>  
+  </section>
+    <section class = "slider-section">
+        <h2>Log a Wine</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt 
+            ut labore et dolore magna aliqua. Lacus laoreet non curabitur gravida. </p>
+    </section>
+    <footer>
+        <div id="contact">
+            <h2>Get in touch!</h2>
+            <div class="socials">
+                <a href="#" class="fa fa-facebook"></a>
+                <a href="#" class="fa fa-twitter"></a>
+                <a href="#" class="fa fa-instagram"></a>
+                <a href="#" class="fa fa-linkedin"></a>
+            </div>
+            <div class="send-email">
+                <form method="POST" action="submission.html">
+                    <label for="name">Name</label><br>
+                    <input type="text" name="name" id="name" rows="4" cols="50" required><br>
+                    <label for="email">Email</label><br>
+                    <input type="email" name="email" id="email" required><br>
+                    <label for="message">Message</label><br>
+                    <textarea name="message" id="message" rows="4" cols="50" required></textarea><br>
+                    <input type="submit" value="Send Message">
+                </form>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
