@@ -5,6 +5,7 @@
   box-sizing: border-box;
 }
 
+
 .first-page-container{
   width: 100%;
   height: 100vh;
@@ -104,7 +105,7 @@
   overflow: hidden;
 }
 
-input{
+.input-field input{
   width: 100%;
   background: transparent;
   border: 0;
@@ -192,4 +193,146 @@ nav{
 
 .nav-links ul li:hover::after{
   width:100%;
+}
+
+.page-selection {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.button-selection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-left: 75px;
+    padding-right: 75px;
+    transition: transform 0.3s; 
+}
+
+.button-selection button {
+  padding: 10px 20px;
+  background-color: #800020;
+  border: none;
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+
+}
+
+.button-selection:hover {
+    transform: scale(1.1); 
+}
+
+.button-selection i {
+    font-size: 40px; 
+    margin-bottom: 10px; 
+}
+
+.welcome-section{
+  text-align: center;
+}
+
+.welcome-section h2 {
+  font-size: 30px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.welcome-section p {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.suggestions-section {
+  display: flex;
+  justify-content: center; 
+  flex-wrap: wrap;
+}
+
+.suggestions-section h2 {
+  width: 100%;
+}
+
+.suggestion-box {
+  margin-right: 10px;
+}
+
+.suggestion-box img {
+  width: 100px; 
+  height: auto; 
+}
+
+.suggestion-box:last-child {
+  margin-right: 0;
+}
+
+.slider-section h2{
+  text-align: center;
+  padding: 5px;
+}
+
+.slider-section p{
+  text-align: justify;
+  margin-right: 500px;
+  margin-left: 500px
+}
+
+footer {
+    border-style: solid;
+    color: #000;
+    padding: 20px;
+    font-size: 14px;
+}
+
+.send-email form {
+  text-align: left;
+}
+
+.socials{
+  text-align: right;
+}
+
+.socials a {
+    color: #800020;
+    margin: 0 5px;
+    text-decoration: none;
+    font-size: 20px;
+}
+
+.socials a:hover {
+    color: #f0f0f0;
+}
+
+.send-email input:nth-of-type(1), .send-email input:nth-of-type(2) {
+    width: 350px;
+    border-radius: 10px;
+    border-color: #d3d3d3;
+    padding: 5px 5px;
+}
+
+.send-email textarea{
+    width: 350px;
+    border-radius: 10px;
+    border-color: #d3d3d3;
+    padding: 5px 5px;
+}
+
+.send-email input:nth-of-type(3) {
+    background-color: #8a0936;
+    font-weight: bold;
+    color: white;
+    padding: 15px 40px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 10px;
+    width: 220px;
+}
+.send-email input:nth-of-type(3):hover {
+    background-color: #800020;
 }
