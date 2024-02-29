@@ -33,13 +33,17 @@
       <p>How much do you typically pay for wine?</p>
       <label><input type="radio" name="q3" value="option1"> I'm not sure</label><br>
       <label><input type="radio" name="q3" value="option2"> $10-$15</label><br>
-      <label><input type="radio" name="q3" value="option3"> $15-$25-</label><br>
+      <label><input type="radio" name="q3" value="option3"> $15-$25</label><br>
       <label><input type="radio" name="q3" value="option4"> I buy wine in a variety of price ranges</label><br>
     </div>
-    <button type="submit">Submit</button>
+    <button id="submitBtn" type="button">Submit</button>
   </form>
-
   <script>
+    let submitBtn = document.getElementById("submitBtn");
+
+    submitBtn.onclick = function(){
+      window.location.href = "quiz_submitted.html";
+    }
   </script>
 </body>
 </html>
