@@ -8,7 +8,7 @@
 
 .first-page-container{
   width: 100%;
-  height: 100vh;
+  height: 75vh;
   background-image: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), url(images/first_page_background.jpg);
   background-position: center;
   background-size: cover;
@@ -96,7 +96,7 @@
 
 .input-field{
   background: #eaeaea;
-  margin: 15px 0;
+  margin: 15px 0 5px;
   border-radius: 3px;
   display: flex;
   align-items: center;
@@ -132,7 +132,7 @@ form p a{
 .btn-field{
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
 }
 
 .btn-field button{
@@ -236,7 +236,7 @@ nav{
 }
 
 .welcome-section h2 {
-  font-size: 30px;
+  font-size: 40px;
   padding-top: 20px;
   padding-bottom: 20px;
 }
@@ -254,30 +254,61 @@ nav{
 
 .suggestions-section h2 {
   width: 100%;
+  padding: 20px;
+  margin-left: 45px;
 }
 
 .suggestion-box {
   margin-right: 10px;
+  border-style: solid;
+  padding: 20px;
+  width: 20%;
+  display: flex;
+  justify-content: center;
+  margin-right: 50px;;
 }
 
 .suggestion-box img {
   width: 100px; 
   height: auto; 
+  align-items: center;
 }
 
 .suggestion-box:last-child {
   margin-right: 0;
 }
 
+.slider-section{
+  position: relative;
+  border-style: solid;
+  background-color: #963539;
+  margin-top: 50px;
+  margin-bottom: 20px;
+  margin-left: 100px;
+  margin-right: 100px;
+  height: 250px;
+}
+
 .slider-section h2{
-  text-align: center;
+  font-size: 30px;
+  color: #fff;
+  text-align: left;
   padding: 5px;
+  position: absolute;
+  left: 40%;
+  transform: translateX(-70%);
+  margin-top: 20px;
 }
 
 .slider-section p{
+  font-size: 15px;
+  position: absolute;
+  color: #fff;
   text-align: justify;
-  margin-right: 500px;
-  margin-left: 500px
+  margin-top: 100px;
+  margin-left: 100px;
+  left: 40%;
+  transform: translateX(-70%);
 }
 
 footer {
