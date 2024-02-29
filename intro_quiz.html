@@ -9,48 +9,37 @@
     <title>BlendBud</title>
 </head>
 <body>
-  <div class="quiz-container">
-    <h2>Question 1: What is your experience level with wine?</h2>
-    <div class="answers">
-      <input type="radio" name="experience1" id="novice1" value="novice">
-      <label for="novice1">I know nothing!</label><br>
-      <input type="radio" name="experience1" id="intermediate1" value="intermediate">
-      <label for="intermediate1">I feel somewhat comfortable but need guidance</label><br>
-      <input type="radio" name="experience1" id="advanced1" value="advanced">
-      <label for="advanced1">I feel somewhat comfortable but need guidance</label><br>
-      <input type="radio" name="experience1" id="expert1" value="expert">
-      <label for="expert1">I would consider myself an expert</label><br>
+  <h1>We'd love to get to know you better...</h1>
+  <p>Take our personalized quiz to enhance your recommendation</p>
+  <form id="quiz-form">
+    <div class="question">
+      <h2>Question 1</h2>
+      <p>What is your experience level with wine?</p>
+      <label><input type="radio" name="q1" value="option1">I know nothing!</label><br>
+      <label><input type="radio" name="q1" value="option2">I know of wine.</label><br>
+      <label><input type="radio" name="q1" value="option3">I feel somewhat comfortable but need guidence.</label><br>
+      <label><input type="radio" name="q1" value="option4">I would consider myself an expert!</label><br>
     </div>
-    <button onclick="nextQuestion()">Next</button>
-  </div>
-  <div class="quiz-container">
-    <h2>Question 2: Why are you using BlendBud?</h2>
-    <div class="answers">
-      <input type="radio" name="experience2" id="novice2" value="novice">
-      <label for="novice2">To find new wines</label><br>
-      <input type="radio" name="experience2" id="intermediate2" value="intermediate">
-      <label for="intermediate2">To get suggestions</label><br>
-      <input type="radio" name="experience2" id="advanced2" value="advanced">
-      <label for="advanced2">Find community</label><br>
-      <input type="radio" name="experience2" id="expert2" value="expert">
-      <label for="expert2">Get food recommendations with wine</label><br>
+    <div class="question">
+      <h2>Question 2</h2>
+      <p>Why are you using BlendBud?</p>
+      <label><input type="radio" name="q2" value="option1">To find new wines.</label><br>
+      <label><input type="radio" name="q2" value="option2">To get suggestions.</label><br>
+      <label><input type="radio" name="q2" value="option3">Find community</label><br>
+      <label><input type="radio" name="q2" value="option4">Get food recommendatiosn with wine</label><br>
     </div>
-    <button onclick="nextQuestion()">Next</button>
-  </div>
-  <div class="quiz-container">
-    <h2>Question 3: How much do you typically pay for wine?</h2>
-    <div class="answers">
-      <input type="radio" name="experience3" id="novice3" value="novice">
-      <label for="novice3">I'm not sure</label><br>
-      <input type="radio" name="experience3" id="intermediate3" value="intermediate">
-      <label for="intermediate3">$10-$15</label><br>
-      <input type="radio" name="experience3" id="advanced3" value="advanced">
-      <label for="advanced3">$15-$25</label><br>
-      <input type="radio" name="experience3" id="expert3" value="expert">
-      <label for="expert3">I buy wine in a variety of price ranges</label><br>
+    <div class="question">
+      <h2>Question 3</h2>
+      <p>How much do you typically pay for wine?</p>
+      <label><input type="radio" name="q3" value="option1"> I'm not sure</label><br>
+      <label><input type="radio" name="q3" value="option2"> $10-$15</label><br>
+      <label><input type="radio" name="q3" value="option3"> $15-$25-</label><br>
+      <label><input type="radio" name="q3" value="option4"> I buy wine in a variety of price ranges</label><br>
     </div>
-    <button onclick="nextQuestion()">Next</button>
-  </div>
-  <script src="script.js"></script>
+    <button type="submit">Submit</button>
+  </form>
+
+  <script>
+  </script>
 </body>
 </html>
