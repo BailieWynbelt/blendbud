@@ -262,7 +262,8 @@ nav{
   margin-right: 10px;
   border-style: solid;
   padding: 20px;
-  width: 20%;
+  margin-bottom: 20px;
+  width: 200px;
   display: flex;
   justify-content: center;
   margin-right: 50px;;
@@ -277,6 +278,7 @@ nav{
 .suggestion-box:last-child {
   margin-right: 0;
 }
+
 
 .slideshow-container {
   position: relative;
@@ -472,4 +474,159 @@ footer {
 
 .profile-buttons button:hover {
   background-color: #800020;
+}
+
+.community-text{
+  text-align: center;
+}
+
+.community-text h2 {
+  font-size: 40px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.community-text p {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.nav-links-community {
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    justify-content: center;
+    padding-left: 75px;
+    padding-right: 75px;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    transition: transform 0.3s; 
+}
+
+.nav-links-community button {
+  padding: 10px 20px;
+  background-color: #800020;
+  border: none;
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+
+}
+
+.user-form-community {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
+}
+
+.user-form-community input {
+    width: 100%;
+    max-width: 1000px;
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    padding: 1rem;
+    margin-bottom: 50px;
+    font-family: inherit;
+    box-shadow: 0 5px 10px rgba(154, 160, 185, 0.05), 0 15px 40px rgba(0, 0, 0, 0.1);
+}
+
+.user-form-community input::placeholder {
+    color: #bbb;
+}
+
+.user-form-community button {
+    border: none;
+    height: 50px;
+    width: 50px;
+    border-radius: 10px;
+    background-color:  #800020; 
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.user-form-community button:hover {
+    background-color: #610000; 
+}
+
+.search-form {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
+}
+
+.search-form input {
+    width: 100%;
+    max-width: 1000px;
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    padding: 1rem;
+    margin-bottom: 50px;
+    font-family: inherit;
+    box-shadow: 0 5px 10px rgba(154, 160, 185, 0.05), 0 15px 40px rgba(0, 0, 0, 0.1);
+}
+
+.search-form input::placeholder {
+    color: #bbb;
+}
+
+.search-form button {
+    border: none;
+    height: 50px;
+    width: 50px;
+    border-radius: 10px;
+    background-color:  #800020; 
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.search-form button:hover {
+    background-color: #610000; 
+}
+
+.search-suggestions {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.search-suggestions h2 {
+  width: 100%;
+  padding: 20px;
+  margin-left: 45px;
+}
+
+.image-container-search {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.image-container-search img {
+    width: 150px; 
+    height: auto;
+    margin-right: 30px;
+    margin-left: 30px;
+    border-style: solid;
+}
+
+.community-search-suggestions {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.community-search-suggestions h2 {
+  width: 100%;
+  padding: 20px;
+  margin-left: 45px;
 }
