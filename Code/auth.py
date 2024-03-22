@@ -1,13 +1,16 @@
 from flask import Blueprint, request, jsonify
 from flask_login import login_user
-from flask_jwt_extended import create_access_token
-from application import app, mongo, login_manager
+from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
+from factory import  mongo, login_manager
 from models import User
 import bcrypt
-from flask_jwt_extended import create_access_token
+import datetime
 from bson.objectid import ObjectId
-from flask_jwt_extended import jwt_required
+from bson.json_util import dumps
+
 auth_blueprint = Blueprint('auth', __name__)
+
+search_blueprint = Blueprint('search', __name__)
 
 @auth_blueprint.route('/protected', methods=['GET'])
 @jwt_required()
@@ -22,9 +25,10 @@ def load_user(user_id):
 @auth_blueprint.route('/register', methods=['POST'])
 def register():
     users = mongo.db.user  
-    username = request.form.get('username')
-    email = request.form.get('email')
-    password = request.form.get('password')
+    data = request.get_json()  
+    username = data.get('username')
+    email = data.get('email')
+    password = data.get('password')
 
     if users.find_one({"email": email}):
         return jsonify({"error": "Email already exists"}), 400
@@ -46,8 +50,9 @@ def register():
 @auth_blueprint.route('/login', methods=['POST'])
 def login():
     users = mongo.db.user
-    username = request.form.get('username')
-    password = request.form.get('password')
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
 
     user_data = users.find_one({"username": username})
 
@@ -59,4 +64,52 @@ def login():
         return jsonify({"message": "Login successful", "access_token": access_token}), 200
     else:
         return jsonify({"error": "Invalid credentials"}), 401
+    
+@search_blueprint.route('/search', methods=['GET'])
+def search():
+    wines_collection = mongo.db.wines
+    query = request.args.get('query')  
+    if not query:
+        return jsonify({"error": "No search query provided"}), 400
+    search_result = wines_collection.aggregate([
+        {
+            '$search': {
+                'index': 'default', 
+                'text': {
+                    'query': query,
+                    'path':  ['name', 'type', 'flavor_profile']
+                }
+            }
+        },
+        {
+            '$limit': 20 
+        }
+    ])
+    results = list(search_result)
 
+    return jsonify(dumps(results)), 200
+
+
+@auth_blueprint.route('/post_comment', methods=['POST'])
+@jwt_required()
+def post_comment():
+    user_id = get_jwt_identity()
+    db = mongo.db.comments
+    data = request.get_json()
+    wine_id = data.get('wine_id')
+    comment_content = data.get('comment')
+    star_rating = data.get('rating')
+    
+    if not wine_id or not comment_content or not star_rating:
+        return jsonify({"error": "Missing data for posting a comment"}), 400
+
+    comment = {
+        'user_id': user_id,
+        'wine_id': wine_id,
+        'comment': comment_content,
+        'rating': star_rating,
+        'timestamp': datetime.datetime.now()
+    }
+    db.insert_one(comment)
+
+    return jsonify({"message": "Comment posted successfully"}), 200

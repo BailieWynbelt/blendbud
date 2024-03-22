@@ -15,8 +15,8 @@ def create_app():
     login_manager.init_app(app)
     jwt.init_app(app)
 
-    with app.app_context():
-        from auth import auth_blueprint
-        app.register_blueprint(auth_blueprint)
+    from auth import auth_blueprint, search_blueprint
+    app.register_blueprint(auth_blueprint, url_prefix='/auth')
+    app.register_blueprint(search_blueprint, url_prefix='/search')
 
     return app
