@@ -630,3 +630,40 @@ footer {
   padding: 20px;
   margin-left: 45px;
 }
+
+.general-description  {
+   display: flex;
+   align-items:center;
+}
+
+.general-description img {
+   vertical-align: middle;
+   margin-left: 30px;
+   width: auto;
+   height: 250px;
+}
+
+.general-description h2 {
+   font-size: 25px;
+   padding: 5px;
+}
+
+.rating-description {
+  margin-left: 75px;
+  margin-top: 35px;
+}
+
+.description-rankings {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin-top: 275px; 
+  margin-right: 500px; 
+}
+
+.description-rankings h2 {
+  text-align: right;
+  padding: 5px;
+}
+
+
