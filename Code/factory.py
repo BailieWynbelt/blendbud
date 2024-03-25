@@ -17,6 +17,6 @@ def create_app():
 
     from auth import auth_blueprint, search_blueprint
     app.register_blueprint(auth_blueprint, url_prefix='/auth')
-    app.register_blueprint(search_blueprint, url_prefix='/search')
+    app.register_blueprint(search_blueprint)
 
     return app
