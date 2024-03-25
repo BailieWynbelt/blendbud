@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BlendBud - Sign Up</title>
+  <meta name="description" content="Sign up for BlendBud">
+  <link rel="stylesheet" href="stylesheet.css">
+  <script src="https://kit.fontawesome.com/3e4426112a.js" crossorigin="anonymous"></script>
+</head>
+<body>
+<div class="container">
+    <div class="form-box">
+      <h1 id="title">Sign Up</h1>
+      <form action = "/register" method = "POST">
+        <div class="input-group">
+          <div class="input-field">
+            <i class="fa-solid fa-envelope"></i>
+            <input type="email" placeholder="Email">
+          </div>
+
+          <div class="input-field">
+            <i class="fa-solid fa-lock"></i>
+            <input type="password" placeholder="Password">
+          </div>
+
+        <div class="input-field">
+            <i class="fa-solid fa-calendar-days"></i>
+            <input type="bday" placeholder="Birthday">
+          </div>
+        <div class="input-field">
+            <input type="checkbox" id="ageCheck" required>
+            <label for="ageCheck">I acknowledge I am 21 years old or older and will use BlendBud responsibly</label>
+          </div>
+        </div>
+        <div class="btn-field">
+          <button type="button" id="signupBtn">Sign up</button>
+        </div>
+        <p>Have an account? <a href="login.html">LOGIN</a></p>
+      </form>
+    </div>
+</div>
+<script>
+let signupBtn = document.getElementById("signupBtn");
+
+signupBtn.onclick = function(){
+  window.location.href = "profile.html";
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head> 
+    <meta charset="UTF-8">
+    <meta name="description" content="Introduction quiz to gain user information">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="stylesheet.css">
+    <script src="https://kit.fontawesome.com/3e4426112a.js" crossorigin="anonymous"></script>
+    <title>BlendBud</title>
+</head>
+<body>
+  <h1>We'd love to get to know you better...</h1>
+  <p>Take our personalized quiz to enhance your recommendation</p>
+  <form id="quiz-form">
+    <div class="question">
+      <h2>Question 1</h2>
+      <p>What is your experience level with wine?</p>
+      <label><input type="radio" name="q1" value="option1">I know nothing!</label><br>
+      <label><input type="radio" name="q1" value="option2">I know of wine.</label><br>
+      <label><input type="radio" name="q1" value="option3">I feel somewhat comfortable but need guidence.</label><br>
+      <label><input type="radio" name="q1" value="option4">I would consider myself an expert!</label><br>
+    </div>
+    <div class="question">
+      <h2>Question 2</h2>
+      <p>Why are you using BlendBud?</p>
+      <label><input type="radio" name="q2" value="option1">To find new wines.</label><br>
+      <label><input type="radio" name="q2" value="option2">To get suggestions.</label><br>
+      <label><input type="radio" name="q2" value="option3">Find community</label><br>
+      <label><input type="radio" name="q2" value="option4">Get food recommendatiosn with wine</label><br>
+    </div>
+    <div class="question">
+      <h2>Question 3</h2>
+      <p>How much do you typically pay for wine?</p>
+      <label><input type="radio" name="q3" value="option1"> I'm not sure</label><br>
+      <label><input type="radio" name="q3" value="option2"> $10-$15</label><br>
+      <label><input type="radio" name="q3" value="option3"> $15-$25</label><br>
+      <label><input type="radio" name="q3" value="option4"> I buy wine in a variety of price ranges</label><br>
+    </div>
+    <div class="question">
+      <h2>Question 4</h2>
+      <p>Do you like sweet or bitter drinks?</p>
+      <label><input type="radio" name="q4" value="option1"> Sweet</label><br>
+      <label><input type="radio" name="q4" value="option2"> Bitter</label><br>
+      <label><input type="radio" name="q4" value="option3"> Both</label><br>
+      <label><input type="radio" name="q4" value="option4"> I'm not sure</label><br>
+    </div>
+    <div class="question">
+      <h2>Question 5</h2>
+      <p>Do you like fizzy drinks?</p>
+      <label><input type="radio" name="q5" value="option1"> Yes</label><br>
+      <label><input type="radio" name="q5" value="option2"> No</label><br>
+      <label><input type="radio" name="q5" value="option3"> Somewhat</label><br>
+      <label><input type="radio" name="q5" value="option4"> I'm not sure</label><br>
+    </div>
+    <div class="question">
+      <h2>Question 6</h2>
+      <p>DSelect what flavors you like</p>
+      <label><input type="radio" name="q6" value="option1"> Apple</label><br>
+      <label><input type="radio" name="q6" value="option2"> Blueberry</label><br>
+      <label><input type="radio" name="q6" value="option3"> Pear</label><br>
+      <label><input type="radio" name="q6" value="option4"> Peach</label><br>
+    </div>
+    <button id="submitBtn" type="button">Submit</button>
+  </form>
+  <script>
+    let submitBtn = document.getElementById("submitBtn");
+
+    submitBtn.onclick = function(){
+      window.location.href = "quiz_submitted.html";
+    }
+  </script>
+</body>
+</html>
