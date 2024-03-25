@@ -70,7 +70,7 @@ class SearchTestCase(BaseTestCase):
 #python -m unittest flask_test.NameSearchTestCase
 class NameSearchTestCase(BaseTestCase):
     def test_name_search(self):
-        response = self.client.get('/search?query=Lilia')
+        response = self.client.get('/search?query=Lilac')
         self.assertEqual(response.status_code, 200)
         print(response.get_json()) 
 
@@ -178,6 +178,7 @@ class RouteTestCase(BaseTestCase):
 class ProfileTestCase(BaseTestCase):
     def setUp(self):
         super().setUp()
+        self.username = 'Lilac Steele'
         self.token = self.register_and_login()
 
     def register_and_login(self):
@@ -192,9 +193,18 @@ class ProfileTestCase(BaseTestCase):
         headers = {
             'Authorization': f'Bearer {self.token}'
         }
-        response = self.client.get('/auth/profile', headers=headers)
+        response = self.client.get(f'/auth/profile/{self.username}', headers=headers)
         self.assertEqual(response.status_code, 200)
-        self.assertIn('Lilac Steele', response.get_json()['username'])
+        profile_data = response.get_json()
+        self.assertEqual(profile_data['username'], 'Lilac Steele')
+        self.assertIn('bio', profile_data)
+
+    def test_guest_viewing_profile(self):
+        response = self.client.get(f'/auth/profile/{self.username}')
+        self.assertEqual(response.status_code, 200)
+        profile_data = response.get_json()
+        self.assertEqual(profile_data['username'], 'Lilac Steele')
+        self.assertIn('bio', profile_data)
     
 
 

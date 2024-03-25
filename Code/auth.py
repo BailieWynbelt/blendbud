@@ -23,6 +23,35 @@ def load_user(user_id):
     users = mongo.db.user
     return users.find_one({"_id": user_id})
 
+
+'''
+1. Register (/register)
+Method: POST
+URL: /auth/register
+Description: Registers a new user with a username, email, and password.
+Request Body:
+{
+  "username": "string",
+  "email": "string",
+  "password": "string"
+}
+
++Success Response
+Code 201
+Content:
+{
+  "message": "User registered successfully",
+  "user_id": "string"
+}
+
+-Error Response
+Code 400
+Content:
+{
+  "error": "Email already exists" 
+  // Or "Username already exists", "Password is required"
+}
+'''
 @auth_blueprint.route('/register', methods=['POST'])
 def register():
     users = mongo.db.user  
@@ -48,6 +77,34 @@ def register():
 
     return jsonify({"message": "User registered successfully", "user_id": str(user_id)}), 201
 
+
+'''
+2. Login (/login)
+Method: POST
+URL: /auth/login
+Description: Authenticates a user and returns a JWT token.
+Request Body:
+{
+  "email": "string",
+  "password": "string"
+}
+
++Success Response
+Code 200
+Content:
+{
+  "message": "Login successful",
+  "access_token": "string"
+}
+
+-Error Response:
+Code 401
+Content:
+{
+  "error": "Invalid credentials"
+}
+
+'''
 @auth_blueprint.route('/login', methods=['POST'])
 def login():
     users = mongo.db.user
@@ -65,7 +122,31 @@ def login():
         return jsonify({"message": "Login successful", "access_token": access_token}), 200
     else:
         return jsonify({"error": "Invalid credentials"}), 401
-    
+
+
+'''
+3. Search (/search)
+Method: GET
+URL: /search?query=string
+Description: Searches for wines based on a query string.
+Query Parameters:
+query: string (required)
+Success Response
+Code: 200
+Content example:
+[{"_id": "1101213", "name": "Margaux", "type": "Margaux", "acidity": 4.1636753, "fizziness": null, "intensity": 3.8193736, 
+"sweetness": 1.4682409, "tannin": 3.850287, "average_rating": 4.0, "price_amount": 52.16613404756387, "review_count": 11247.0, 
+"food_ids": "4; 8; 11; 20", "flavor_profile": ["oak", "blackberry", "leather", "plum", "cherry"], "food_id": [4, 8, 11, 20]}, 
+{"_id": "1287027", "name": "Margaux", "type": "Margaux", "acidity": 4.1794605, "fizziness": null, "intensity": 3.7525327, 
+"sweetness": 1.5856922, "tannin": 3.6996198, "average_rating": 4.2, "price_amount": 32.603833779727424, "review_count": 14047.0, 
+"food_ids": "4; 8; 11; 20", "flavor_profile": ["leather", "oak", "blackcurrant", "tobacco", "blackberry"], "food_id": [4, 8, 11, 20]}, ...]
+Error Response:
+Code: 400 (Bad Request)
+Content:
+{
+  "error": "No search query provided"
+}
+'''
 @search_blueprint.route('/search', methods=['GET'])
 def search():
     wines_collection = mongo.db.wines
@@ -117,10 +198,36 @@ def search_user():
     ])
 
     users = list(search_result)
-    user_list = [{'username': user['username'], 'id': str(user['_id'])} for user in users]
 
-    return jsonify(user_list), 200
+    return jsonify(users), 200
 
+'''
+4. Post Comment (/post_comment)
+Method: POST
+URL: /auth/post_comment
+Description: Posts a comment for a specific wine. Requires JWT authentication.
+Request Body:
+{
+  "wine_id": "string",
+  "comment": "string",
+  "rating": integer
+}
+
++Success Response
+Code 200
+Content:
+{
+  "message": "Comment posted successfully"
+}
+
+-Error Response:
+Code 400
+Content:
+{
+  "error": "Missing data for posting a comment"
+}
+
+'''
 
 @auth_blueprint.route('/post_comment', methods=['POST'])
 @jwt_required()
@@ -146,6 +253,29 @@ def post_comment():
 
     return jsonify({"message": "Comment posted successfully"}), 200
 
+
+'''
+5. Wine Profile (/wine/<wine_id>)
+Method: GET
+URL: /wine/{wine_id}
+Description: Retrieves the profile of a specific wine.
+URL Parameters:
+wine_id: string (required)
+Success Response:
+Code: 200
+Content example: 
+{"_id": "1171671", "name": "Margaux", "type": "Margaux", "acidity": 4.2452188, "fizziness": null, 
+"intensity": 3.827806, "sweetness": 1.3505505, "tannin": 3.8045642, "average_rating": 4.0, "price_amount": 29.348839465189343, 
+"review_count": 6295.0, "food_ids": "4; 8; 11; 20", "flavor_profile": ["oak", "leather", "plum", "blackberry", "earthy"], 
+"food_id": [4, 8, 11, 20]}
+Error Response:
+Code: 404 (Not Found)
+Content:
+{
+  "error": "Wine not found"
+}
+
+'''
 @search_blueprint.route('/wine/<wine_id>', methods=['GET'])
 def get_wine_profile(wine_id):
 
@@ -156,10 +286,30 @@ def get_wine_profile(wine_id):
 
     return jsonify(dumps(wine_data)), 200
 
-@search_blueprint.route('/food/<food_id>', methods=['GET'])
+'''
+6. Food Profile (/food/<food_id>)
+Method: GET
+URL: /food/{food_id}
+Description: Retrieves the profile of a specific food.
+URL Parameters:
+food_id: string (required)
+Success Response:
+Code: 200
+Content example:
+{"_id": 4, "food_name": "Beef", "description": "Rich, full-bodied red wines like Cabernet Sauvignon or Malbec complement beef by 
+balancing its robust flavors and high fat content with strong tannins and deep, complex flavors."}
+Error Response:
+Code: 404 (Not Found)
+Content:
+{
+  "error": "Food not found"
+}
+
+'''
+@search_blueprint.route('/food/<int:food_id>', methods=['GET'])
 def get_food_profile(food_id):
 
-    food_data = mongo.db.foods.find_one({"_id": food_id})
+    food_data = mongo.db.food.find_one({"_id": food_id})
 
     if not food_data:
         return jsonify({"error": "Food not found"}), 404
@@ -170,18 +320,49 @@ def get_food_profile(food_id):
 def test_route():
     return jsonify({"message": "Test route works"}), 200
 
+'''
+7. Edit Profile (/edit_profile)
+Method: POST
+URL: /auth/edit_profile
+Description: Edits the user's profile. Requires JWT authentication.
+Request Body:
+{
+  "username": "string (optional)",
+  "bio": "string (optional)"
+}
+
++Success Response:
+Code: 200
+Content: 
+{
+  "Profile updated successfully"
+}
+-Error Response:
+Code: 404 (Not Found)
+Content:
+{
+  "error": "User not found"
+}
+-Code: 409 (Duplicate))
+Content:
+{
+  "Username already exists"
+}
+'''
 @auth_blueprint.route('/edit_profile', methods=['POST'])
 @jwt_required()
 def edit_profile():
-    user_id = get_jwt_identity()  
-    users = mongo.db.user 
+    user_id = get_jwt_identity()
+    users = mongo.db.user
 
     data = request.get_json()
     new_username = data.get('username')
     bio = data.get('bio')
 
-    user = users.find_one({"_id": ObjectId(user_id)})
+    if new_username and users.find_one({"username": new_username, "_id": {"$ne": ObjectId(user_id)}}):
+        return jsonify({"error": "Username already exists"}), 409
 
+    user = users.find_one({"_id": ObjectId(user_id)})
     if not user:
         return jsonify({"error": "User not found"}), 404
 
@@ -197,11 +378,49 @@ def edit_profile():
     return jsonify({"message": "Profile updated successfully"}), 200
 
 
-@auth_blueprint.route('/profile/<user_id>', methods=['GET'])
+'''
+8. Profile
+Method: POST
+URL: /auth/edit_profile
+Method: GET
+URL: /auth/profile/<username>
+Description: Retrieves the profile of a user by their username. 
+URL Parameters:
+username: String
+Headers:
+Authorization (optional): A valid JWT if the request is being made by a logged-in user.
+
++Success Response:
+Code: 200
+Content: 
+{
+    "username": "johndoe",
+    "bio": "bio of John Doe."
+}
+
+-Error Response:
+Code: 404 (Not Found)
+Content:
+{
+    "error": "User not found"
+}
+
+'''
+@auth_blueprint.route('/profile/<username>', methods=['GET'])
 @jwt_required(optional=True)
-def get_user_profile(user_id):
-    user = mongo.db.user.find_one({"_id": ObjectId(user_id)}, {'username': 1, 'bio': 1, '_id': 0})
+def get_user_profile(username):
+    user = mongo.db.user.find_one({"username": username}, {'username': 1, 'bio': 1, '_id': 0})
 
     if not user:
         return jsonify({"error": "User not found"}), 404
+
     return jsonify(user), 200
+
+
+'''
+Pass back the token as a header if the function need it:
+headers: 
+{
+    'Authorization': `Bearer ${accessToken}`
+}
+'''
