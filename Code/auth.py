@@ -424,3 +424,182 @@ headers:
     'Authorization': `Bearer ${accessToken}`
 }
 '''
+
+
+'''
+9. Preferences
+Method: POST
+URL: /auth/update_preferences
+Description: Update/add preferences for chosen user 
+Headers:
+Authorization (required): A valid JWT
+Request Body:
+{
+  "like_pref": "string list",
+  "dis_pref": "string list"
+}
+Example:
+{
+  "like_pref": ["87702","56743"],
+  "dis_pref": ["82341","257833"]
+}
++Success Response:
+Code: 200
+Content: 
+{
+    "Preferences updated successfully",
+    "user_id":
+}
+'''
+
+@auth_blueprint.route('/update_preferences', methods=['POST'])
+@jwt_required()
+def update_preferences():
+    user_id = get_jwt_identity()
+    data = request.get_json()
+    like_pref = data.get('like_pref', [])
+    dis_pref = data.get('dis_pref', [])
+
+
+
+    pref_doc = mongo.db.preferences.find_one({"user_id": ObjectId(user_id)})
+
+    if pref_doc:
+        mongo.db.preferences.update_one(
+            {"user_id": ObjectId(user_id)},
+            {"$set": {"like_pref": like_pref, "dis_pref": dis_pref}}
+        )
+    else:
+        mongo.db.preferences.insert_one({
+            "user_id": ObjectId(user_id),
+            "like_pref": like_pref,
+            "dis_pref": dis_pref
+        })
+
+    return jsonify({"message": "Preferences updated successfully", "user_id": str(user_id)}), 200
+
+
+'''
+10. Add to Favorites
+URL: /auth/add_to_favorites
+Method: POST
+URL: /auth/add_to_favorites
+Description: Adds a wine to the user's favorite list. Requires JWT authentication.
+Request Body:
+{
+  "wine_id": "string"
+}
+'''
+@auth_blueprint.route('/add_to_favorites', methods=['POST'])
+@jwt_required()
+def add_to_favorites():
+    user_id = get_jwt_identity()
+    data = request.get_json()
+    wine_id = data.get('wine_id')
+
+    if not wine_id:
+        return jsonify({"error": "Wine ID is required"}), 400
+
+    pref_doc = mongo.db.preferences.find_one({"user_id": ObjectId(user_id)})
+
+    if not pref_doc:
+        mongo.db.preferences.insert_one({
+            "user_id": ObjectId(user_id),
+            "like_pref": [wine_id],
+            "dis_pref": [],
+            "flavor_pref": []
+        })
+        return jsonify({"message": "Added to favorites"}), 200
+
+    if wine_id not in pref_doc.get('like_pref', []):
+        mongo.db.preferences.update_one(
+            {"user_id": ObjectId(user_id)},
+            {"$addToSet": {"like_pref": wine_id}}
+        )
+        return jsonify({"message": "Added to favorites"}), 200
+    else:
+        return jsonify({"message": "Already in favorites"}), 200
+
+'''
+10. Remove from Favorites
+URL: /auth/remove_from_favorites
+Method: POST
+URL: /auth/remove_from_favorites
+Description: Remove a wine from the user's favorite list. Requires JWT authentication.
+Request Body:
+{
+  "wine_id": "string"
+}
+'''
+@auth_blueprint.route('/remove_from_favorites', methods=['POST'])
+@jwt_required()
+def remove_from_favorites():
+    user_id = get_jwt_identity()
+    data = request.get_json()
+    wine_id = data.get('wine_id')
+
+    if not wine_id:
+        return jsonify({"error": "Wine ID is required"}), 400
+
+    pref_doc = mongo.db.preferences.find_one({"user_id": ObjectId(user_id)})
+
+    if not pref_doc:
+        return jsonify({"error": "User preferences not found"}), 404
+
+    if wine_id in pref_doc.get('like_pref', []):
+        mongo.db.preferences.update_one(
+            {"user_id": ObjectId(user_id)},
+            {"$pull": {"like_pref": wine_id}}
+        )
+        return jsonify({"message": "Removed from favorites"}), 200
+    else:
+        return jsonify({"error": "Wine not in favorites"}), 400
+
+'''
+11. Check Favorite
+Method: POST
+URL: /auth/check_favorite
+Description: Checks if a wine is in the user's favorite list. Requires JWT authentication.
+Request Body:
+{
+  "wine_id": "string"
+}
+Content:
+{"is_favorite": true} 
+{"is_favorite": false} 
+'''
+@auth_blueprint.route('/check_favorite', methods=['POST'])
+@jwt_required()
+def check_favorite():
+    user_id = get_jwt_identity()
+    data = request.get_json()
+    wine_id = data.get('wine_id')
+    
+    if not wine_id:
+        return jsonify({"error": "No wine ID provided"}), 400
+
+    pref_doc = mongo.db.preferences.find_one({"user_id": ObjectId(user_id)})
+
+    if not pref_doc:
+        return jsonify({"is_favorite": False}), 200
+
+    is_favorite = wine_id in pref_doc.get('like_pref', [])
+    return jsonify({"is_favorite": is_favorite}), 200
+
+
+'''
+12. 
+Method: GET
+URL: /auth/top_wines
+Description: return 20 top wines in rating
+Content:
+20 top wines
+'''
+
+@search_blueprint.route('/top_wines', methods=['GET'])
+def top_wines():
+    wines_collection = mongo.db.wines
+    top_wines = wines_collection.find().sort("average_rating", -1).limit(20)
+
+    top_wines_list = list(top_wines)
+    return jsonify(dumps(top_wines_list)), 200
