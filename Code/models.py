@@ -6,3 +6,4 @@ class User(UserMixin):
         self.username = user_data.get("username")
         self.email = user_data.get("email")
         self.password = user_data.get("password")
+        self.bio = user_data.get("bio")

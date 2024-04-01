@@ -1,6 +1,6 @@
 import unittest
 from factory import create_app, mongo
-
+from bson.objectid import ObjectId
 
 #python -m unittest flask_test.BaseTestCase
 class BaseTestCase(unittest.TestCase):
@@ -205,9 +205,66 @@ class ProfileTestCase(BaseTestCase):
         profile_data = response.get_json()
         self.assertEqual(profile_data['username'], 'Lilac Steele')
         self.assertIn('bio', profile_data)
-    
 
 
+# python -m unittest flask_test.PreferencesTestCase
+class PreferencesTestCase(BaseTestCase):
+    def setUp(self):
+        super().setUp()
+        self.username = 'Lilac Steele'
+        self.token = self.register_and_login()
+
+    def register_and_login(self):
+        user_data = {
+            'email': 'liliasteele@gmail.com',
+            'password': 'supersecretpassword'
+        }
+        login_response = self.client.post('/auth/login', json=user_data)
+        return login_response.get_json()['access_token']
+
+    def test_update_preferences(self):
+        like_pref = ['9712', '88180']
+        dis_pref = ['1125543', '1136930']
+        preferences_data = {
+            'like_pref': like_pref,
+            'dis_pref': dis_pref
+        }
+        headers = {'Authorization': f'Bearer {self.token}'}
+        response = self.client.post('/auth/update_preferences', json=preferences_data, headers=headers)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('Preferences updated successfully', response.get_json()['message'])
+
+        user_preferences = mongo.db.preferences.find_one({'user_id': ObjectId(response.get_json()['user_id'])})
+        self.assertIsNotNone(user_preferences)
+        self.assertEqual(user_preferences['like_pref'], like_pref)
+        self.assertEqual(user_preferences['dis_pref'], dis_pref)
+
+# python -m unittest flask_test.FavoriteWinesTestCase
+class FavoriteWinesTestCase(BaseTestCase):
+    def setUp(self):
+        super().setUp()
+        self.token = self.register_and_login()
+
+    def register_and_login(self):
+        user_data = {
+            'email': 'liliasteele@gmail.com',
+            'password': 'supersecretpassword'
+        }
+        login_response = self.client.post('/auth/login', json=user_data)
+        return login_response.get_json()['access_token']
+
+    def test_add_to_favorites(self):
+        headers = {'Authorization': f'Bearer {self.token}'}
+        wine_data = {'wine_id': '22447'}
+        response = self.client.post('/auth/add_to_favorites', json=wine_data, headers=headers)
+        self.assertEqual(response.status_code, 200)
+
+    def test_check_favorite(self):
+        headers = {'Authorization': f'Bearer {self.token}'}
+        wine_data = {'wine_id': '22447'}
+        response = self.client.post('/auth/check_favorite', json=wine_data, headers=headers)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('is_favorite', response.get_json())
 
 
 
