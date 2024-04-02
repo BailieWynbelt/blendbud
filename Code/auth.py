@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, render_template
 from flask_login import login_user
 from flask_jwt_extended import  create_access_token, get_jwt_identity, jwt_required
 from factory import  mongo, login_manager
@@ -23,6 +23,13 @@ def load_user(user_id):
     users = mongo.db.user
     return users.find_one({"_id": user_id})
 
+@auth_blueprint.route('/signup')
+def signup():
+    return render_template('signup.html')
+
+@auth_blueprint.route('/login')
+def login_page():
+    return render_template('login.html')
 
 '''
 1. Register (/register)
@@ -55,10 +62,9 @@ Content:
 @auth_blueprint.route('/register', methods=['POST'])
 def register():
     users = mongo.db.user  
-    data = request.get_json()  
-    username = data.get('username')
-    email = data.get('email')
-    password = data.get('password')
+    username = request.form.get('username')
+    email = request.form.get('email')
+    password = request.form.get('password')
 
     if users.find_one({"email": email}):
         return jsonify({"error": "Email already exists"}), 400
@@ -108,9 +114,8 @@ Content:
 @auth_blueprint.route('/login', methods=['POST'])
 def login():
     users = mongo.db.user
-    data = request.get_json()
-    email = data.get('email')
-    password = data.get('password')
+    email = request.form.get('email')
+    password = request.form.get('password')
 
     user_data = users.find_one({"email": email})
 
