@@ -31,6 +31,10 @@ def signup():
 def login_page():
     return render_template('login.html')
 
+@auth_blueprint.route('/profile')
+def profile_page():
+    return render_template('profile.html')
+
 '''
 1. Register (/register)
 Method: POST
