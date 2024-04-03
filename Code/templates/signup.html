@@ -52,7 +52,7 @@ signupBtn.onclick = function(){
   <title>Sign up for BlendBud</title>
 </head>
 <body>
-  <form action="/auth/register" method='POST'>
+  <form id = 'signup-form' action="/auth/register" method='POST'>
   <div>
     <label for="name">Username:</label>
     <input type="text" id="name" name="username" />
@@ -73,5 +73,32 @@ signupBtn.onclick = function(){
   </div>
 
 </form>
+<div id="output-signup"></div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+      $('#signup-form').on('submit', function(e) {
+        e.preventDefault(); 
+        var formData = {
+          username: $('#name').val(),
+          email: $('#mail').val(),
+          password: $('#password').val()
+        };
+        $.ajax({
+          type: 'POST',
+          url: '/auth/register',
+          data: formData,
+          dataType: 'json',
+          success: function(data) {
+            $('#output-signup').text(data.message).show();
+          },
+          error: function(xhr, status, error) {
+            var err = xhr.responseJSON.error;
+            $('#output-signup').text(err).show();
+          }
+        });
+      });
+    });
+</script>
 </body>
 </html>
