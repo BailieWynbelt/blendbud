@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="description" content="Introduction quiz to gain user information">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="stylesheet.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/stylesheet.css') }}">
     <script src="https://kit.fontawesome.com/3e4426112a.js" crossorigin="anonymous"></script>
     <title>BlendBud</title>
 </head>
@@ -16,28 +16,28 @@
             </div>
             <div class="nav-links">
                 <ul>
-                    <li><a href="login.html">LOG IN</a></li>
-                    <li><a href="signup.html">SIGN UP</a></li>
-                    <li><a href="profile.html">PROFILE</a></li>
+                    <li><a href="{{ url_for('auth.login') }}">LOG IN</a></li>
+                    <li><a href="{{ url_for('auth.signup') }}">SIGN UP</a></li>
+                    <li><a href="{{ url_for('auth.profile_page') }}">PROFILE</a></li>
                 </ul>
             </div>
         </nav>
         <div class = "page-selection">
             <div class = button-selection>
                 <i class="fa-solid fa-house"></i>
-                <a href="home.html"><button class="home-selection">Home</button></a>
+                <a href="{{ url_for('auth.home') }}"><button class="home-selection">Home</button></a>
             </div>
             <div class = button-selection>
                 <i class="fa-solid fa-magnifying-glass"></i>
-                <a href="search.html"><button class="search-selection">Search</button></a>
+                <a href="{{ url_for('auth.search') }}"><button class="search-selection">Search</button></a>
             </div>
             <div class = button-selection>
                 <i class="fa-solid fa-champagne-glasses"></i>
-                <a href="community.html"><button class="community-selection">Community</button></a>
+                <a href="{{ url_for('auth.community') }}"><button class="community-selection">Community</button></a>
             </div>
             <div class = button-selection>
                 <i class="fa-solid fa-question"></i>
-                <a href="about.html"><button class="about-selection">About Us</button></a>
+                <a href="{{ url_for('auth.about') }}"><button class="about-selection">About Us</button></a>
             </div>
         </div>
     </section>
