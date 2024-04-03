@@ -35,6 +35,22 @@ def login_page():
 def profile_page():
     return render_template('profile.html')
 
+@auth_blueprint.route('/home')
+def home():
+    return render_template('home.html')
+
+@auth_blueprint.route('/community')
+def community():
+    return render_template('community.html')
+
+@auth_blueprint.route('/search')
+def search():
+    return render_template('search.html')
+
+@auth_blueprint.route('/about')
+def about():
+    return render_template('about.html')
+
 '''
 1. Register (/register)
 Method: POST
