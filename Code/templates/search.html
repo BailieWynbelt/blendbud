@@ -22,32 +22,17 @@
                 </ul>
             </div>
         </nav>
-        <div class = "page-selection">
-            <div class = button-selection>
-                <i class="fa-solid fa-house"></i>
-                <a href="{{ url_for('auth.home') }}"><button class="home-selection">Home</button></a>
-            </div>
-            <div class = button-selection>
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <a href="{{ url_for('auth.search') }}"><button class="search-selection">Search</button></a>
-            </div>
-            <div class = button-selection>
-                <i class="fa-solid fa-champagne-glasses"></i>
-                <a href="{{ url_for('auth.community') }}"><button class="community-selection">Community</button></a>
-            </div>
-            <div class = button-selection>
-                <i class="fa-solid fa-question"></i>
-                <a href="{{ url_for('auth.about') }}"><button class="about-selection">About Us</button></a>
-            </div>
-        </div>
-    </section>
-    <form class="search-form" id="form">
-            <input type="text" id="search" placeholder="Search a wine brand or name">
-            <button>
+        <form class="search-form" id="searchForm">
+            <input type="text" id="searchQuery" placeholder="Search for wines...">
+            <button type="submit">
                 <i class="fa fa-search" style="font-size: 18px;"></i>
             </button>
-    </form>
-    <div class="search-suggestions">
+        </form>
+        <div id="searchResults"></div>
+    </section>
+    
+
+    <div class="search-suggestions" id="suggestions" style="display:none;">
         <h2>SUGGESTIONS FOR YOU</h2>
         <div class="image-container-search">
             <img src="images/winebottle.png" alt="Image 1">
@@ -56,7 +41,9 @@
             <img src="images/winebottle.png" alt="Image 4">
         </div>
     </div>
-    <div class="search-suggestions">
+
+
+    <div class="search-suggestions" id="recentSearches" style="display:none;">
         <h2>RECENT SEARCHES</h2>
         <div class="image-container-search">
             <img src="images/winebottle.png" alt="Image 1">
@@ -65,6 +52,7 @@
             <img src="images/winebottle.png" alt="Image 4">
         </div>
     </div>
+
     <footer>
         <div id="contact">
             <h2>Get in touch!</h2>
@@ -87,5 +75,37 @@
             </div>
         </div>
     </footer>
+    <script>
+        document.getElementById("searchForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const searchQuery = document.getElementById("searchQuery").value;
+
+            fetch(`http://localhost:5000/search?query=${searchQuery}`)
+                .then(response => response.json())
+                .then(data => {
+                    const searchResults = document.getElementById("searchResults");
+                    searchResults.innerHTML = '';
+
+                    if (data.error) {
+                        searchResults.innerHTML = `<p>${data.error}</p>`;
+                    } else {
+                        data.forEach(wine => {
+                            const div = document.createElement("div");
+                            div.innerHTML = `
+                                <h4>${wine.name}</h4>
+                                <p>Type: ${wine.type}</p>
+                                <p>Flavor Profile: ${wine.flavor_profile.join(', ')}</p>
+                            `;
+                            searchResults.appendChild(div);
+                        });
+                        document.getElementById("suggestions").style.display = 'block';
+                        document.getElementById("recentSearches").style.display = 'block';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+    </script>
 </body>
 </html>
