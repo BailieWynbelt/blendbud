@@ -1,5 +1,5 @@
-from flask import Blueprint, request, jsonify, render_template
-from flask_login import login_user
+from flask import Blueprint, request, jsonify, render_template, redirect, url_for, flash
+from flask_login import login_user, login_required, current_user
 from flask_jwt_extended import  create_access_token, get_jwt_identity, jwt_required
 from factory import  mongo, login_manager
 from models import User
@@ -32,8 +32,15 @@ def login_page():
     return render_template('login.html')
 
 @auth_blueprint.route('/profile')
+@jwt_required()
 def profile_page():
-    return render_template('profile.html')
+    current_user_id = get_jwt_identity()
+    users = mongo.db.user
+    user_data = users.find_one({"_id": ObjectId(current_user_id)})
+    if user_data:
+        return render_template('profile.html', current_user=user_data)
+    else:
+        return jsonify({"error": "User not found"}), 404
 
 @auth_blueprint.route('/home')
 def home():
@@ -142,8 +149,7 @@ def login():
     user = User(user_data) if user_data else None
 
     if user and bcrypt.checkpw(password.encode('utf-8'), user_data['password']):
-        login_user(user) 
-        access_token = create_access_token(identity=str(user.id))  
+        access_token = create_access_token(identity=str(user.id)) 
         return jsonify({"message": "Login successful", "access_token": access_token}), 200
     else:
         return jsonify({"error": "Invalid credentials"}), 401
