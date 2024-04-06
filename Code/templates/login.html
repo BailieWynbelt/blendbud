@@ -1,46 +1,3 @@
-<!--<!DOCTYPE html>
-<html lang="en">
-<head> 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BlendBud - Login</title>
-  <meta name="description" content="Login to BlendBud">
-  <link rel="stylesheet" href="stylesheet.css">
-  <script src="https://kit.fontawesome.com/3e4426112a.js" crossorigin="anonymous"></script>
-</head>
-<body>
-<div class="container">
-    <div class="form-box">
-      <h1 id="title">Login</h1>
-      <form action = "/auth/login" method = "POST">
-        <div class="input-group">
-          <div class="input-field">
-            <i class="fa-solid fa-envelope"></i>
-            <input type="email" placeholder="Email">
-          </div>
-
-          <div class="input-field">
-            <i class="fa-solid fa-lock"></i>
-            <input type="password" placeholder="Password">
-          </div>
-          <p>Forgot password? <a href="#">Click Here</a></p>
-        </div>
-        <div class="btn-field">
-          <button type="button" id="signinBtn">Sign in</button>
-        </div>
-        <p>Need an account? <a href="signup.html">SIGN UP</a></p>
-      </form>
-    </div>
-</div>
-<script>
-let signinBtn = document.getElementById("signinBtn");
-
-signinBtn.onclick = function(){
-  window.location.href = "profile.html";
-}
-</script>
-</body>
-</html>
--->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -65,33 +22,37 @@ signinBtn.onclick = function(){
     <button type="submit">Login</button>
   </div>
 
+
 </form>
-<div id="output-login"></div>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script type="text/javascript">
-    $(document).ready(function() {
-      $('#login-form').on('submit', function(e) {
+$(document).ready(function() {
+    $('#login-form').on('submit', function(e) {
         e.preventDefault(); 
         var formData = {
-          email: $('#mail').val(),
-          password: $('#password').val()
+            email: $('#mail').val(),
+            password: $('#password').val()
         };
         $.ajax({
-          type: 'POST',
-          url: '/auth/login',
-          data: formData,
-          dataType: 'json',
-          success: function(data) {
-            alert(data.message);
-            window.location.href = '/auth/profile';
-          },
-          error: function(xhr, status, error) {
-            var err = xhr.responseJSON.error;
-            $('#output-login').text(err).show();
-          }
+            type: 'POST',
+            url: '/auth/login',
+            data: formData,
+            dataType: 'json',
+            headers: {
+              'Authorization': 'Bearer ' + localStorage.getItem('access_token')
+            },
+            success: function(data) {
+                localStorage.setItem('access_token', data.access_token);
+                window.location.href = '/auth/profile';
+            },
+            error: function(xhr, status, error) {
+                var err = xhr.responseJSON.error;
+                $('#output-login').text(err).show();
+            }
         });
-      });
     });
+});
 </script>
 </body>
 </html>
