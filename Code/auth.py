@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, render_template, redirect, url_for, flash
 from flask_login import login_user, login_required, current_user
 from flask_jwt_extended import  create_access_token, get_jwt_identity, jwt_required
-from factory import  mongo, jwt
+from factory import mongo, login_manager
 from models import User
 import bcrypt
 import datetime
@@ -17,6 +17,11 @@ search_blueprint = Blueprint('search', __name__)
 @jwt_required()
 def protected_route():
     return jsonify({"message": "Access granted to protected route"}), 200
+
+@login_manager.user_loader
+def load_user(user_id):
+    users = mongo.db.user
+    return users.find_one({"_id": user_id})
 
 @auth_blueprint.route('/signup')
 def signup():
