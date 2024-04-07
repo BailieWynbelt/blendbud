@@ -28,30 +28,29 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-    $('#login-form').on('submit', function(e) {
-        e.preventDefault(); 
-        var formData = {
-            email: $('#mail').val(),
-            password: $('#password').val()
-        };
-        $.ajax({
-            type: 'POST',
-            url: '/auth/login',
-            data: formData,
-            dataType: 'json',
-            headers: {
-              'Authorization': 'Bearer ' + localStorage.getItem('access_token')
-            },
-            success: function(data) {
-                localStorage.setItem('access_token', data.access_token);
-                window.location.href = '/auth/profile';
-            },
-            error: function(xhr, status, error) {
-                var err = xhr.responseJSON.error;
-                $('#output-login').text(err).show();
-            }
-        });
+  $('#login-form').on('submit', function(e) {
+    e.preventDefault();
+    var formData = {
+      email: $('#mail').val(),
+      password: $('#password').val()
+    };
+
+    $.ajax({
+      type: 'POST',
+      url: '/auth/login',
+      data: formData,
+      dataType: 'json',
+      headers: {"Authorization": localStorage.getItem('token')},
+      success: function(data) {
+        console.log("Login successful");
+        localStorage.setItem('token', data.access_token);
+      },
+      error: function(xhr, status, error) {
+        var err = xhr.responseJSON.error;
+        $('#output-login').text(err).show();
+      }
     });
+  });
 });
 </script>
 </body>

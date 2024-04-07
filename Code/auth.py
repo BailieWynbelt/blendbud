@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, render_template, redirect, url_for, flash
 from flask_login import login_user, login_required, current_user
 from flask_jwt_extended import  create_access_token, get_jwt_identity, jwt_required
-from factory import  mongo, login_manager
+from factory import  mongo, jwt
 from models import User
 import bcrypt
 import datetime
@@ -18,11 +18,6 @@ search_blueprint = Blueprint('search', __name__)
 def protected_route():
     return jsonify({"message": "Access granted to protected route"}), 200
 
-@login_manager.user_loader
-def load_user(user_id):
-    users = mongo.db.user
-    return users.find_one({"_id": user_id})
-
 @auth_blueprint.route('/signup')
 def signup():
     return render_template('signup.html')
@@ -34,9 +29,13 @@ def login_page():
 @auth_blueprint.route('/profile')
 @jwt_required()
 def profile_page():
-    current_user_id = get_jwt_identity()
+    """Creating the template with respect to the user
+    Returns:
+        dict: Return the profile and template created
+    """
+    current_user = get_jwt_identity()
     users = mongo.db.user
-    user_data = users.find_one({"_id": ObjectId(current_user_id)})
+    user_data = users.find_one({"_id": ObjectId(current_user)})
     if user_data:
         return render_template('profile.html', current_user=user_data)
     else:
@@ -148,11 +147,11 @@ def login():
 
     user = User(user_data) if user_data else None
 
-    if user and bcrypt.checkpw(password.encode('utf-8'), user_data['password']):
-        access_token = create_access_token(identity=str(user.id)) 
-        return jsonify({"message": "Login successful", "access_token": access_token}), 200
-    else:
+    if not user and not bcrypt.checkpw(password.encode('utf-8'), user_data['password']):
         return jsonify({"error": "Invalid credentials"}), 401
+    
+    access_token = create_access_token(identity=str(user.id)) 
+    return jsonify({"access_token": access_token}), 200
 
 
 '''
