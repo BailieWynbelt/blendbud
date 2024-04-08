@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, render_template, redirect, url_for, flash
+from flask import Blueprint, request, jsonify, render_template, redirect, url_for, flash, session, make_response
 from flask_login import login_user, login_required, current_user
 from flask_jwt_extended import  create_access_token, get_jwt_identity, jwt_required
 from factory import mongo, login_manager
@@ -7,7 +7,7 @@ import bcrypt
 import datetime
 from bson.objectid import ObjectId
 from bson.json_util import dumps
-from flask import session
+import logging
 
 auth_blueprint = Blueprint('auth', __name__)
 
@@ -31,20 +31,19 @@ def signup():
 def login_page():
     return render_template('login.html')
 
-@auth_blueprint.route('/profile')
-@jwt_required()
+@auth_blueprint.route('/profile', methods=["GET"])
+@jwt_required(optional=False)
 def profile_page():
-    """Creating the template with respect to the user
-    Returns:
-        dict: Return the profile and template created
-    """
+    print("Accessing profile page")
     current_user = get_jwt_identity()
     users = mongo.db.user
     user_data = users.find_one({"_id": ObjectId(current_user)})
+
     if user_data:
         return render_template('profile.html', current_user=user_data)
     else:
         return jsonify({"error": "User not found"}), 404
+
 
 @auth_blueprint.route('/home')
 def home():
@@ -150,13 +149,13 @@ def login():
 
     user_data = users.find_one({"email": email})
 
-    user = User(user_data) if user_data else None
-
-    if not user and not bcrypt.checkpw(password.encode('utf-8'), user_data['password']):
+    if not user_data or not bcrypt.checkpw(password.encode('utf-8'), user_data['password']):
+        logging.debug("Logging failure")
         return jsonify({"error": "Invalid credentials"}), 401
-    
-    access_token = create_access_token(identity=str(user.id)) 
-    return jsonify({"access_token": access_token}), 200
+    access_token = create_access_token(identity=str(user_data['_id']))
+    response = make_response(jsonify({"message": "Login successful"}))
+    response.set_cookie('access_token_cookie', access_token)
+    return response
 
 
 '''
@@ -265,7 +264,7 @@ Content:
 '''
 
 @auth_blueprint.route('/post_comment', methods=['POST'])
-@jwt_required()
+@jwt_required(optional=False)
 def post_comment():
     user_id = get_jwt_identity()
     db = mongo.db.comments
@@ -385,7 +384,7 @@ Content:
 }
 '''
 @auth_blueprint.route('/edit_profile', methods=['POST'])
-@jwt_required()
+@jwt_required(optional=False)
 def edit_profile():
     user_id = get_jwt_identity()
     users = mongo.db.user
@@ -444,7 +443,7 @@ Content:
 @auth_blueprint.route('/profile/<username>', methods=['GET'])
 @jwt_required(optional=True)
 def get_user_profile(username):
-    user = mongo.db.user.find_one({"username": username}, {'username': 1, 'bio': 1, '_id': 0})
+    user = mongo.db.user.find_one({"username": username}, {'username': 1, 'bio': 1, '_id': 0, 'email':1})
 
     if not user:
         return jsonify({"error": "User not found"}), 404
@@ -488,7 +487,7 @@ Content:
 '''
 
 @auth_blueprint.route('/update_preferences', methods=['POST'])
-@jwt_required()
+@jwt_required(optional=False)
 def update_preferences():
     user_id = get_jwt_identity()
     data = request.get_json()
@@ -526,7 +525,7 @@ Request Body:
 }
 '''
 @auth_blueprint.route('/add_to_favorites', methods=['POST'])
-@jwt_required()
+@jwt_required(optional=False)
 def add_to_favorites():
     user_id = get_jwt_identity()
     data = request.get_json()
@@ -567,7 +566,7 @@ Request Body:
 }
 '''
 @auth_blueprint.route('/remove_from_favorites', methods=['POST'])
-@jwt_required()
+@jwt_required(optional=False)
 def remove_from_favorites():
     user_id = get_jwt_identity()
     data = request.get_json()
@@ -604,7 +603,7 @@ Content:
 {"is_favorite": false} 
 '''
 @auth_blueprint.route('/check_favorite', methods=['POST'])
-@jwt_required()
+@jwt_required(optional=False)
 def check_favorite():
     user_id = get_jwt_identity()
     data = request.get_json()
