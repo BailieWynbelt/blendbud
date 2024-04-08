@@ -3,55 +3,52 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/stylesheet.css') }}">
   <title>Login to BlendBud</title>
 </head>
 <body>
-  <form id = 'login-form' action="/auth/login" method='POST'>
-  <div>
-    <label for="mail">Email:</label>
-    <input type="email" id="mail" name="email" />
-  </div>
+  <form id="login-form">
+    <div>
+      <label for="mail">Email:</label>
+      <input type="email" id="mail" name="email" />
+    </div>
 
-  <div>
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" />
-  </div>
+    <div>
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" />
+    </div>
 
-  <div class="button">
-    <button type="submit">Login</button>
-  </div>
+    <div class="button">
+      <button type="submit">Login</button>
+    </div>
+  </form>
 
+  <div id="output-login"></div>
 
-</form>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script type="text/javascript">
+  $(document).ready(function() {
+    $('#login-form').on('submit', function(e) {
+      e.preventDefault();
+      var formData = new FormData(this); 
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script type="text/javascript">
-$(document).ready(function() {
-  $('#login-form').on('submit', function(e) {
-    e.preventDefault();
-    var formData = {
-      email: $('#mail').val(),
-      password: $('#password').val()
-    };
-
-    $.ajax({
-      type: 'POST',
-      url: '/auth/login',
-      data: formData,
-      dataType: 'json',
-      headers: {"Authorization": localStorage.getItem('token')},
-      success: function(data) {
-        console.log("Login successful");
-        localStorage.setItem('token', data.access_token);
-      },
-      error: function(xhr, status, error) {
-        var err = xhr.responseJSON.error;
-        $('#output-login').text(err).show();
-      }
+      $.ajax({
+        type: 'POST',
+        url: 'http://localhost:5000/login',
+        processData: false,
+        contentType: false,
+        data: formData,
+        success: function(data) {
+          console.log("Login successful", data);
+          localStorage.setItem('token', data.access_token);
+          window.location.href = './home';
+        },
+        error: function(xhr, status, error) {
+          var err = xhr.responseJSON ? xhr.responseJSON.error : 'Login failed';
+          $('#output-login').text(err).show();
+        }
+      });
     });
   });
-});
-</script>
+  </script>
 </body>
 </html>
