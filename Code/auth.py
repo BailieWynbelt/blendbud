@@ -41,7 +41,9 @@ def profile_page():
     user_data = users.find_one({"_id": ObjectId(current_user)})
 
     if user_data:
-        return render_template('profile.html', current_user=user_data)
+        username = user_data.get('username')
+        email = user_data.get('email')
+        return render_template('profile.html', username = username, email = email)
     else:
         return jsonify({"error": "User not found"}), 404
 
