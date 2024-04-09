@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wine Details</title>
+</head>
+<body>
+    <h1>Wine Details</h1>
+    <div id="wineDetails">
+    </div>
+    <script>
+        window.onload = function() {
+            const queryParams = new URLSearchParams(window.location.search);
+            const wineId = queryParams.get('id');
+
+            fetch(`/wine/${wineId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        document.getElementById('wineDetails').innerHTML = data.error;
+                    } else {
+                        document.getElementById('wineDetails').innerHTML = `
+                            <h2>${data.name}</h2>
+                            <p>Type: ${data.type}</p>
+                            <p>Flavor Profile: ${data.flavor_profile.join(', ')}</p>
+                            <p>Average Rating: ${data.average_rating}</p>
+                            <p>Price: $${data.price_amount}</p>
+                        `;
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        };
+    </script>
+</body>
+</html>
