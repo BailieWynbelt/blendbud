@@ -8,7 +8,6 @@ import datetime
 from bson.objectid import ObjectId
 from bson.json_util import dumps
 import logging
-import suggest as suggest
 
 auth_blueprint = Blueprint('auth', __name__)
 
@@ -54,8 +53,8 @@ def home():
 def community():
     return render_template('community.html')
 
-@auth_blueprint.route('/search')
-def search():
+@auth_blueprint.route('/search-page')
+def show_search():
     return render_template('search.html')
 
 @auth_blueprint.route('/about')
@@ -182,33 +181,30 @@ Content:
   "error": "No search query provided"
 }
 '''
-@search_blueprint.route('/search', methods=['GET'])
+@search_blueprint.route('/search')
 def search():
-    wines_collection = mongo.db.wines
-    query = request.args.get('query')  
-    if not query:
-        return jsonify({"error": "No search query provided"}), 400
-    search_result = wines_collection.aggregate([
-        {
-            '$search': {
-                'index': 'default', 
-                'text': {
-                    'query': query,
-                    'path':  ['name', 'type', 'flavor_profile']
+    query = request.args.get('query')
+    
+    if query:
+        wines_collection = mongo.db.wines
+        search_result = wines_collection.aggregate([
+            {
+                '$search': {
+                    'index': 'default',
+                    'text': {
+                        'query': query,
+                        'path': ['name', 'type', 'flavor_profile']
+                    }
                 }
-            }
-        },
-        {
-            '$limit': 20 
-        }
-    ])
-    results = list(search_result)
-    if 'recent_searches' not in session:
-        session['recent_searches'] = []
-    session['recent_searches'].append(query)
-    session['recent_searches'] = session['recent_searches'][-10:]
+            },
+            {'$limit': 20}
+        ])
+        results = list(search_result)
+        return jsonify(results)
+    else:
+        return render_template('search.html')
 
-    return jsonify(dumps(results)), 200
+
 
 @search_blueprint.route('/search_user', methods=['GET'])
 def search_user():
@@ -638,69 +634,3 @@ def top_wines():
 
     top_wines_list = list(top_wines)
     return jsonify(dumps(top_wines_list)), 200
-
-
-'''
-13.
-Method: GET
-URL: /auth/suggest_wines
-Description: returns top 5 suggested wines for the user
-Content:
-5 suggested wines
-'''
-
-@auth_blueprint.route('/suggest_wines', methods=['POST'])
-@jwt_required()
-def suggest_wines():
-    user_id = get_jwt_identity()
-    data = request.get_json()
-    suggestions = []
-    
-    pref_doc = mongo.db.preferences.find_one({"user_id": ObjectId(user_id)})
-    like_pref = pref_doc.get('like_pref', [])
-    flav_pref = pref_doc.get('flav_pref', [])
-
-    if not pref_doc:
-        suggestions = suggest.suggest_wines("flavor", [])
-        #return jsonify({suggestions}), 200
-    
-    if len(like_pref > 0):
-        suggestions = suggest.suggest_wines("like", like_pref)
-        #return jsonify({suggestions}), 200
-    
-    elif len(like_pref == 0):
-        suggestions = suggest.suggest_wines("flavor", flav_pref)
-        #return jsonify({suggestions}), 200
-    
-    suggestions_cursor = mongo.db.wines.find({'_id': {'$in': suggestions}})
-    suggestions_list = list(suggestions_cursor)
-    return jsonify(dumps(suggestions_list)), 200
-
-
-'''
-14.
-Method: GET
-URL: /auth/suggest_blends
-Description: returns top 5 suggested wines for the blend between two users
-Content:
-5 suggested blends wines
-'''
-
-@auth_blueprint.route('/suggest_blends', methods=['POST'])
-@jwt_required()
-def suggest_wines_blend():
-    user_id = get_jwt_identity()
-    data = request.get_json()
-    user_id2 = data.get('user_id2')
-    
-    pref_doc1 = mongo.db.preferences.find_one({"user_id": ObjectId(user_id)})
-    like_pref1 = pref_doc1.get('like_pref', [])
-    flav_pref1 = pref_doc1.get('flav_pref', [])
-    pref_doc2 = mongo.db.preferences.find_one({"user_id": ObjectId(user_id2)})
-    like_pref2 = pref_doc2.get('like_pref', [])
-    flav_pref2 = pref_doc2.get('flav_pref', [])
-
-    suggestions = suggest.suggest_wine_blend(like_pref1, flav_pref1, like_pref2, flav_pref2)
-    suggestions_cursor = mongo.db.wines.find({'_id': {'$in': suggestions}})
-    suggestions_list = list(suggestions_cursor)
-    return jsonify(dumps(suggestions_list)), 200
