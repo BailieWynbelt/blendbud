@@ -3,7 +3,7 @@ from pymongo import MongoClient
 
 client = MongoClient('mongodb+srv://servad:Ta527eZ3eqUWeA9s@tastebud.opgas9v.mongodb.net/')
 db = client['TasteBud']
-collection = db.Wines
+collection = db.wines
 input_csv_file = 'wine_data3.csv'
 
 with open(input_csv_file, mode='r', newline='', encoding='utf-8-sig') as csvfile:

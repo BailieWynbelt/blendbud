@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head> 
+    <meta charset="UTF-8">
+    <meta name="description" content="Introduction quiz to gain user information">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/stylesheet.css') }}">
+    <script src="https://kit.fontawesome.com/3e4426112a.js" crossorigin="anonymous"></script>
+    <title>BlendBud</title>
+</head>
+<body>
+    <section class="header">
+        <nav>
+            <div class="logo">
+                <h1>LOGO PLACEHOLDER</h1>
+            </div>
+            <div class="nav-links">
+                <ul>
+                    <li><a href="{{ url_for('auth.login') }}">LOG IN</a></li>
+                    <li><a href="{{ url_for('auth.signup') }}">SIGN UP</a></li>
+                    <li><a href="{{ url_for('auth.profile_page') }}">PROFILE</a></li>
+                </ul>
+            </div>
+        </nav>
+        <div class = "page-selection">
+            <div class = button-selection>
+                <i class="fa-solid fa-house"></i>
+                <a href="{{ url_for('auth.home') }}"><button class="home-selection">Home</button></a>
+            </div>
+            <div class = button-selection>
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <a href="{{ url_for('auth.show_search') }}"><button class="search-selection">Search</button></a>
+            </div>
+            <div class = button-selection>
+                <i class="fa-solid fa-champagne-glasses"></i>
+                <a href="{{ url_for('auth.community') }}"><button class="community-selection">Community</button></a>
+            </div>
+            <div class = button-selection>
+                <i class="fa-solid fa-question"></i>
+                <a href="{{ url_for('auth.about') }}"><button class="about-selection">About Us</button></a>
+            </div>
+        </div>
+    </section>
+        <form class="user-form-community" id="form">
+            <input type="text" id="search" placeholder="Search for friends">
+            <button>
+                <i class="fa fa-search" style="font-size: 18px;"></i>
+            </button>
+        </form>
+    <section class = "community-text">
+        <h2>BlendBud is better with friends</h2>
+        <p>Add you buds and find wines that align with both of your tastes!</p>
+    </section>  
+    <div class="community-search-suggestions">
+        <h2>People you may know</h2>
+        <div class="image-container-search">
+            <img src="images/profile.jpg" alt="Image 1">
+            <img src="images/profile.jpg" alt="Image 2">
+            <img src="images/profile.jpg" alt="Image 3">
+            <img src="images/profile.jpg" alt="Image 4">
+        </div>
+    </div>
+    <script src="community_search.js"></script>
+    <footer>
+        <div id="contact">
+            <h2>Get in touch!</h2>
+            <div class="socials">
+                <a href="#" class="fa fa-facebook"></a>
+                <a href="#" class="fa fa-twitter"></a>
+                <a href="#" class="fa fa-instagram"></a>
+                <a href="#" class="fa fa-linkedin"></a>
+            </div>
+            <div class="send-email">
+                <form method="POST" action="submission.html">
+                    <label for="name">Name</label><br>
+                    <input type="text" name="name" id="name" rows="4" cols="50" required><br>
+                    <label for="email">Email</label><br>
+                    <input type="email" name="email" id="email" required><br>
+                    <label for="message">Message</label><br>
+                    <textarea name="message" id="message" rows="4" cols="50" required></textarea><br>
+                    <input type="submit" value="Send Message">
+                </form>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

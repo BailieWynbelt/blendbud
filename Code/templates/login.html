@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login to BlendBud</title>
+</head>
+<body>
+  <form id="login-form">
+    <div>
+      <label for="mail">Email:</label>
+      <input type="email" id="mail" name="email" />
+    </div>
+
+    <div>
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" />
+    </div>
+
+    <div class="button">
+      <button type="submit">Login</button>
+    </div>
+  </form>
+
+  <div id="output-login"></div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script type="text/javascript">
+  $(document).ready(function() {
+    $('#login-form').on('submit', function(e) {
+      e.preventDefault();
+      var formData = new FormData(this); 
+
+      $.ajax({
+        type: 'POST',
+        url: 'http://127.0.0.1:5000/login',
+        processData: false,
+        contentType: false,
+        data: formData,
+        success: function(data) {
+          console.log("Login successful", data);
+          localStorage.setItem('token', data.access_token);
+          window.location.href = './home';
+        },
+        error: function(xhr, status, error) {
+          var err = xhr.responseJSON ? xhr.responseJSON.error : 'Login failed';
+          $('#output-login').text(err).show();
+        }
+      });
+    });
+  });
+  </script>
+</body>
+</html>
