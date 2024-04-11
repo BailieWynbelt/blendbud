@@ -638,37 +638,65 @@ Content:
 '''
 
 @search_blueprint.route('/top_wines', methods=['GET'])
+@jwt_required()
 def top_wines():
-    wines_collection = mongo.db.wines
-    top_wines = wines_collection.find().sort("average_rating", -1).limit(20)
+    user_id = get_jwt_identity()
+    print(user_id)
+    suggestions = []
+    
 
-    top_wines_list = list(top_wines)
-    return jsonify(dumps(top_wines_list)), 200
+    pref_doc = mongo.db.preferences.find_one({"user_id": ObjectId(user_id)})
+
+    if not pref_doc:
+        print('User has no preferences indicated')
+        suggestions = suggest.suggest_wines("flavor", [])
+        return suggestions, 200
+    
+    like_pref = pref_doc.get('like_pref', [])
+    flav_pref = pref_doc.get('flav_pref', [])
+
+    if len(like_pref) > 0:
+        print("Suggesting based on liked wines")
+        suggestions = suggest.suggest_wines("like", like_pref)
+
+    elif len(like_pref) == 0:
+        print("Suggesting based on liked flavors, or for empty user")
+        suggestions = suggest.suggest_wines("flavor", flav_pref)
+
+    suggestions_cursor = mongo.db.wines.find({'_id': {'$in': suggestions}}, {"_id": 0, "name": 1})
+    suggestions_list = list(suggestions_cursor)
+    to_suggest = []
+    for s in suggestions_list:
+        print(s["name"])
+        to_suggest.append(s["name"])
+
+    #suggestions_list = ['100', '101', '102']
+    return to_suggest, 200
 
 
 '''
 13.
-Method: POST
+Method: GET
 URL: /auth/suggest_wines
 Description: returns top 5 suggested wines for the user
 Content:
 5 suggested wines
 '''
 
-@auth_blueprint.route('/suggest_wines', methods=['POST'])
-@jwt_required()
+@search_blueprint.route('/suggest_wines', methods=['GET'])
 def suggest_wines():
     user_id = get_jwt_identity()
-    data = request.get_json()
+    print(user_id)
     suggestions = []
-
+    '''
     pref_doc = mongo.db.preferences.find_one({"user_id": ObjectId(user_id)})
-    like_pref = pref_doc.get('like_pref', [])
-    flav_pref = pref_doc.get('flav_pref', [])
 
     if not pref_doc:
         suggestions = suggest.suggest_wines("flavor", [])
-        #return jsonify({suggestions}), 200
+        return jsonify({suggestions}), 200
+    
+    like_pref = pref_doc.get('like_pref', [])
+    flav_pref = pref_doc.get('flav_pref', [])
 
     if len(like_pref > 0):
         suggestions = suggest.suggest_wines("like", like_pref)
@@ -680,6 +708,8 @@ def suggest_wines():
 
     suggestions_cursor = mongo.db.wines.find({'_id': {'$in': suggestions}})
     suggestions_list = list(suggestions_cursor)
+    '''
+    suggestions_list = ['100', '101', '102']
     return jsonify(dumps(suggestions_list)), 200
 
 

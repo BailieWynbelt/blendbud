@@ -42,7 +42,7 @@
         </div>
     </section>
     <section class = "welcome-section">
-        <h2>Welcome to BlendBud: Wine made easy</h2>
+        <h2>Welcome to BlendBud: Wine made easy {{ current_user }} </h2>
     </section>
     <div class="search-suggestions">
         <h2>SUGGESTIONS FOR YOU</h2>
@@ -122,22 +122,27 @@ function showSlides(n) {
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
+    console.log("hello???");
     $.ajax({
-        type: 'POST',
-        url: 'http://127.0.0.1:5000/suggest_wines',
+        type: 'GET',
+        url: 'http://127.0.0.1:5000/top_wines',
         processData: false,
         contentType: false,
-        //data: '',
-        dataType: 'json',
+        data: '',
+        dataType: 'text',
         success: function(data) {
+            localStorage.getItem('token');
             console.log("Suggestions loaded successful", data);
-            $("#suggestions").load(data);
+            $("#suggestions").text(data);
+            //$("#suggestions").text("ok").show();
         },
         error: function(xhr, status, error) {
+            console.log("something in here");
             var err = xhr.responseJSON ? xhr.responseJSON.error : 'Suggestions loading failed';
             $("#suggestions").text(err).show();
         }
     });
+    console.log("hiii??");
 });
 </script>
 
