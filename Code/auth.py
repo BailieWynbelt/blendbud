@@ -18,7 +18,20 @@ search_blueprint = Blueprint('search', __name__)
 @jwt_required()
 def protected_route():
     return jsonify({"message": "Access granted to protected route"}), 200
-
+    
+@search_blueprint.route('/description/<wine_id>')
+def wine_description(wine_id):
+    wine_data = mongo.db.wines.find_one({"_id": wine_id})
+    food_ids = wine_data.get('food_ids')
+    if not food_ids:
+        foods = [] 
+    else:
+        foods = list(mongo.db.food.find({"_id": {"$in": food_ids}}))
+    food_names = foods
+    if not wine_data:
+        return jsonify({"error": "Wine not found"}), 404
+    return render_template('description.html', wine=wine_data, food =food_names)
+    
 @login_manager.user_loader
 def load_user(user_id):
     users = mongo.db.user
