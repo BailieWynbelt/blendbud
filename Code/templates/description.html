@@ -44,22 +44,31 @@
     <div class = general-description>
         <img src="images/winebottle.png" alt="Image 1">
         <span>
-            <h2>Brand:</h2>
-            <h2>Name:</h2>
-            <h2>Price:</h2>
+            <h2>{{wine.type}}</h2>
+            <h2>{{wine.name}}</h2>
+            <h2>${{wine.price_amount}}</h2>
         </span>
     </div>
     <div class = rating-description>
-        <h2>Tried [NAME PLACEHOLDER]? Rate it here</h2>
+        <h2>Tried {{wine.name}}? Rate it here</h2>
     </div>
     <div class = description-rankings>
-        <h2>Acidity:</h2>
-        <h2>Fizziness:</h2>
-        <h2>Intensity:</h2>
-        <h2>Sweetness:</h2>
-        <h2>Tanin:</h2>
+        <h2>{{wine.acidity}}</h2>
+        <h2>{{wine.fizziness}}</h2>
+        <h2>{{wine.intensity}}</h2>
+        <h2>{{wine.sweetness}}</h2>
+        <h2>{{wine.tanin}}</h2>
+        <h2>{{wine.flavor_profile}}</h2>
     </div>
+    <div class = review>
+        <h2>Average rating: {{wine.average_rating}}</h2>
+        <h2>Review counts: {{wine.review_count}}</h2>
 
+    </div>
+    <div class = food>
+        <h2>{{food.food_name}}</h2>
+
+    </div>
     <footer>
         <div id="contact">
             <h2>Get in touch!</h2>
