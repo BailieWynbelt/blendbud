@@ -60,7 +60,14 @@ def home():
     return render_template('home.html')
 
 @auth_blueprint.route('/community')
+@jwt_required(optional=False)
 def community():
+    print("Accessing the community pages")
+    current_user = get_jwt_identity()
+    users = mongo.db.user
+    user_data = users.find_one({'_id': ObjectId(current_user)})
+    if user_data:
+        return render_template('community.html', current_user=current_user)
     return render_template('community.html')
 
 @auth_blueprint.route('/search-page')
@@ -629,12 +636,12 @@ def check_favorite():
 
 
 '''
-12. 
+12. User Suggestions
 Method: GET
 URL: /auth/top_wines
-Description: return 20 top wines in rating
+Description: return the top 5 suggested wines for a user
 Content:
-20 top wines
+5 top suggested wines for the user (requires authentication)
 '''
 
 @search_blueprint.route('/top_wines', methods=['GET'])
@@ -643,100 +650,65 @@ def top_wines():
     user_id = get_jwt_identity()
     print(user_id)
     suggestions = []
-    
-
     pref_doc = mongo.db.preferences.find_one({"user_id": ObjectId(user_id)})
-
     if not pref_doc:
         print('User has no preferences indicated')
         suggestions = suggest.suggest_wines("flavor", [])
-        return suggestions, 200
+        to_suggest = get_suggestion_names(suggestions)
+        return to_suggest, 200
     
     like_pref = pref_doc.get('like_pref', [])
     flav_pref = pref_doc.get('flav_pref', [])
-
+    print("DO NOT RECOMMEND THESE ALREADY LIKED: ", like_pref)
     if len(like_pref) > 0:
         print("Suggesting based on liked wines")
         suggestions = suggest.suggest_wines("like", like_pref)
-
     elif len(like_pref) == 0:
         print("Suggesting based on liked flavors, or for empty user")
         suggestions = suggest.suggest_wines("flavor", flav_pref)
 
+    to_suggest = get_suggestion_names(suggestions)
+    return to_suggest, 200      # returns a list of names rn
+
+def get_suggestion_names(suggestions):
     suggestions_cursor = mongo.db.wines.find({'_id': {'$in': suggestions}}, {"_id": 0, "name": 1})
     suggestions_list = list(suggestions_cursor)
     to_suggest = []
     for s in suggestions_list:
         print(s["name"])
         to_suggest.append(s["name"])
-
-    #suggestions_list = ['100', '101', '102']
-    return to_suggest, 200
+    return to_suggest
 
 
 '''
-13.
+12. Blend Suggestions (2 Users)
 Method: GET
-URL: /auth/suggest_wines
-Description: returns top 5 suggested wines for the user
+URL: /auth/top_blends
+Description: return the top 5 suggested blend wines for two users (wip)
 Content:
-5 suggested wines
+5 top suggested blended wines for the two users (requires authentication)
 '''
 
-@search_blueprint.route('/suggest_wines', methods=['GET'])
-def suggest_wines():
-    user_id = get_jwt_identity()
-    print(user_id)
-    suggestions = []
-    '''
-    pref_doc = mongo.db.preferences.find_one({"user_id": ObjectId(user_id)})
-
-    if not pref_doc:
-        suggestions = suggest.suggest_wines("flavor", [])
-        return jsonify({suggestions}), 200
-    
-    like_pref = pref_doc.get('like_pref', [])
-    flav_pref = pref_doc.get('flav_pref', [])
-
-    if len(like_pref > 0):
-        suggestions = suggest.suggest_wines("like", like_pref)
-        #return jsonify({suggestions}), 200
-
-    elif len(like_pref == 0):
-        suggestions = suggest.suggest_wines("flavor", flav_pref)
-        #return jsonify({suggestions}), 200
-
-    suggestions_cursor = mongo.db.wines.find({'_id': {'$in': suggestions}})
-    suggestions_list = list(suggestions_cursor)
-    '''
-    suggestions_list = ['100', '101', '102']
-    return jsonify(dumps(suggestions_list)), 200
-
-
-'''
-14.
-Method: GET
-URL: /auth/suggest_blends
-Description: returns top 5 suggested wines for the blend between two users
-Content:
-5 suggested blends wines
-'''
-
-@auth_blueprint.route('/suggest_blends', methods=['POST'])
+@search_blueprint.route('/top_blends', methods=['GET'])
 @jwt_required()
-def suggest_wines_blend():
+def top_blends():
     user_id = get_jwt_identity()
-    data = request.get_json()
-    user_id2 = data.get('user_id2')
+    user_id2 = request.args.get('user-id')
+    print("user id: ", user_id2)
+    print("current user id: ", user_id)
 
     pref_doc1 = mongo.db.preferences.find_one({"user_id": ObjectId(user_id)})
-    like_pref1 = pref_doc1.get('like_pref', [])
-    flav_pref1 = pref_doc1.get('flav_pref', [])
+    like_pref1 = pref_doc1.get('like_pref', []) if pref_doc1 else []
+    flav_pref1 = pref_doc1.get('flav_pref', []) if pref_doc1 else []
     pref_doc2 = mongo.db.preferences.find_one({"user_id": ObjectId(user_id2)})
-    like_pref2 = pref_doc2.get('like_pref', [])
-    flav_pref2 = pref_doc2.get('flav_pref', [])
+    like_pref2 = pref_doc2.get('like_pref', []) if pref_doc2 else []
+    flav_pref2 = pref_doc2.get('flav_pref', []) if pref_doc2 else []
 
     suggestions = suggest.suggest_wine_blend(like_pref1, flav_pref1, like_pref2, flav_pref2)
     suggestions_cursor = mongo.db.wines.find({'_id': {'$in': suggestions}})
     suggestions_list = list(suggestions_cursor)
-    return jsonify(dumps(suggestions_list)), 200
+    to_suggest = []
+    for s in suggestions_list:
+        print(s["name"])
+        to_suggest.append(s["name"])
+    return to_suggest, 200

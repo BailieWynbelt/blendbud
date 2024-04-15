@@ -44,9 +44,12 @@
     <section class="community-text">
         <h2>BlendBud is better with friends</h2>
         <p>Add you buds and find wines that align with both of your tastes!</p>
+
     </section>
     <div class="nav-links-community">
             <a href="community_search.html"><button class="profile-selection">Search Profiles</button></a>
+            <button id="blend-test" class="profile-selection">Blend with Buddy (test)</button>
+            <div id="section-test">Testing...</div>
     </div>
     <footer>
         <div id="contact">
@@ -70,5 +73,32 @@
             </div>
         </div>
     </footer>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function() {
+      $('#blend-test').on('click', function(e) {
+        e.preventDefault();
+        var data = {"user-id":"660dbe27bdd99c72f02e7b4a"}   // change to match user requested... buddy rn
+  
+        $.ajax({
+          type: 'GET',
+          url: 'http://127.0.0.1:5000/top_blends',
+          //processData: false,
+          //contentType: "text",
+          data: data,
+          dataType: 'text',
+          success: function(data) {
+            console.log("Blend successful", data);
+            $("#section-test").text(data).show();
+          },
+          error: function(xhr, status, error) {
+            var err = xhr.responseJSON ? xhr.responseJSON.error : 'Blending failed';
+            $("#section-test").text(err).show();
+          }
+        });
+      });
+    });
+    </script>
 </body>
 </html>

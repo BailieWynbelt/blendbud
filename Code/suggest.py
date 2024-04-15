@@ -105,8 +105,8 @@ def suggest_failsafe_wines():
     wine_collection = db.wines
     top_wines = wine_collection.find().sort("average_rating", -1).limit(20)
     cheap_top_wines = top_wines.sort("price_amount").limit(5)
-    print("cheapy:", list(cheap_top_wines))
-    suggestions = ["1386686","5177761","1649800","8890662","2472"]
+    #print("cheapy:", list(cheap_top_wines))
+    suggestions = ["1386686","5177761","1649800","8890662","2472"]          #TODO: not this!
     #return cheap_top_wines
     return suggestions
 
