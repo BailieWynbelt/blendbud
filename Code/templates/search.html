@@ -132,11 +132,11 @@
             .then(data => {
                 const searchResults = document.getElementById("searchResults");
                 searchResults.innerHTML = '';
-                searchResults.style.display = 'block';  // Make sure the search results are visible
+                searchResults.style.display = 'block'; 
 
                 data.forEach(wine => {
                     const div = document.createElement("div");
-                    const wineUrl = `http://localhost:5000/wine/${wine._id}`;
+                    const wineUrl = `/description/${wine._id}`;
                     div.innerHTML = `<a href="${wineUrl}" style="font-weight:bold; color:black; text-decoration:none;">${wine.name}</a>`;
                     searchResults.appendChild(div);
                 });
