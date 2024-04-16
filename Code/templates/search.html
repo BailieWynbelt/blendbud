@@ -14,6 +14,7 @@
         }
         #searchQuery {
             width: 400px;
+            color: black;
         }
         #searchResults {
             display: none; 
@@ -122,7 +123,7 @@
         event.preventDefault();
         const searchQuery = document.getElementById("searchQuery").value;
 
-        fetch(`http://localhost:5000/search?query=${searchQuery}`)
+        fetch(`http://127.0.0.1:5000/search?query=${searchQuery}`) //localhost/login
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
@@ -137,7 +138,11 @@
                 data.forEach(wine => {
                     const div = document.createElement("div");
                     const wineUrl = `/description/${wine._id}`;
+                    console.log("wine id: ", wine._id)
+                    console.log("wineurl: ", wineUrl);
                     div.innerHTML = `<a href="${wineUrl}" style="font-weight:bold; color:black; text-decoration:none;">${wine.name}</a>`;
+                    //div.innerHTML = `<a href="{{ url_for('auth.login') }}" style="font-weight:bold; color:black; text-decoration:none;">${wine.name}</a>`;
+                    //<a href="{{ url_for('auth.login') }}">
                     searchResults.appendChild(div);
                 });
             })

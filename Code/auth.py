@@ -23,9 +23,12 @@ def protected_route():
 def wine_description(wine_id):
     wine_data = mongo.db.wines.find_one({"_id": wine_id})
     food_ids = wine_data.get('food_ids')
+    food_ids = [food.strip() for food in food_ids.split(';')]
     if not food_ids:
         foods = [] 
     else:
+        print("food ids: ", food_ids)
+        print("food id type: ", type(food_ids))
         foods = list(mongo.db.food.find({"_id": {"$in": food_ids}}))
     food_names = foods
     if not wine_data:
@@ -72,6 +75,10 @@ def community():
 @auth_blueprint.route('/search-page')
 def show_search():
     return render_template('search.html')
+
+@auth_blueprint.route('/community-search')
+def show_community_search():
+    return render_template('community_search.html')
 
 @auth_blueprint.route('/about')
 def about():
@@ -222,31 +229,28 @@ def search():
 
 
 
-@search_blueprint.route('/search_user', methods=['GET'])
+@search_blueprint.route('/search_user')
 def search_user():
-    query = request.args.get('query') 
-
-    if not query:
-        return jsonify({"error": "No search query provided"}), 400
-
-    search_result = mongo.db.user.aggregate([
-        {
-            '$search': {
-                'index': 'profile',  
-                'text': {
-                    'query': query,
-                    'path': 'username'  
+    query = request.args.get('query')
+    print("query: ", query)
+    if query:
+        user_collection = mongo.db.user
+        search_result = user_collection.aggregate([
+            {
+                '$search': {
+                    'index': 'profile',
+                    'text': {
+                        'query': query,
+                        'path': ['username']
+                    }
                 }
-            }
-        },
-        {
-            '$limit': 20
-        }
-    ])
-
-    users = list(search_result)
-
-    return jsonify(users), 200
+            },
+            {'$limit': 20}
+        ])
+        results = list(search_result)
+        return jsonify(results)
+    else:
+        return render_template('community_search.html')
 
 '''
 4. Post Comment (/post_comment)
@@ -427,8 +431,6 @@ def edit_profile():
 
 '''
 8. Profile
-Method: POST
-URL: /auth/edit_profile
 Method: GET
 URL: /auth/profile/<username>
 Description: Retrieves the profile of a user by their username. 
