@@ -716,3 +716,48 @@ def suggest_wines_blend():
     suggestions_cursor = mongo.db.wines.find({'_id': {'$in': suggestions}})
     suggestions_list = list(suggestions_cursor)
     return jsonify(dumps(suggestions_list)), 200
+
+'''
+15.
+Method: POST
+URL: /auth/quiz
+Description: submits quiz results to the preferences table in the data base
+Content:
+A list of liked flavors
+'''
+@auth_blueprint.route('/quiz', methods=['POST'])
+@jwt_required()
+def quiz():
+    user_id = get_jwt_identity()
+    preferences = mongo.db.preferences
+    
+    insert = request.form['checkboxvalue']
+    
+    check_user = preferences.find_one({"user_id": ObjectId(user_id)})
+    
+    if check_user:
+        mongo.db.preferences.update_one(
+            {"user_id": ObjectId(user_id)},
+            {"$set": {"flavor_pref": insert}}
+        )
+    else:
+        mongo.db.preferences.insert_one({
+            "user_id": ObjectId(user_id),
+            "flavor_pref": insert
+        })
+
+    return jsonify({"message": "Preferences updated successfully", "user_id": str(user_id)}), 200
+
+'''
+16.
+Method: POST
+URL: /auth/logout
+Description: Removes access token from a user to logout
+Content:
+access token
+'''
+@auth_blueprint.route('/logout', methods=['POST'])
+def logout():
+    response = make_response(jsonify({"message": "Logout successful"}))
+    response.set_cookie('access_token_cookie', '')
+    return response
