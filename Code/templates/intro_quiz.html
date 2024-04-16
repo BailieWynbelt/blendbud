@@ -11,7 +11,7 @@
 <body>
   <h1>We'd love to get to know you better...</h1>
   <p>Take our personalized quiz to enhance your recommendation</p>
-  <form id="quiz-form">
+  <form id = 'quiz-form' action="/quiz" method='POST'>
     <div class="question">
       <h2>Question 1</h2>
       <p>What is your experience level with wine?</p>
@@ -56,19 +56,44 @@
     <div class="question">
       <h2>Question 6</h2>
       <p>Select all flavors you like:</p>
-      <label><input type="checkbox" name="q6" value="option1"> Apple</label><br>
-      <label><input type="checkbox" name="q6" value="option2"> Blueberry</label><br>
-      <label><input type="checkbox" name="q6" value="option3"> Pear</label><br>
-      <label><input type="checkbox" name="q6" value="option4"> Peach</label><br>
+      <label><input type="checkbox" class = "get_value" id = "apple"  value="apple"> Apple</label><br>
+      <label><input type="checkbox" class = "get_value" id = "blueberry"  value="blueberry"> Blueberry</label><br>
+      <label><input type="checkbox" class = "get_value" id = "pear"  value="pear"> Pear</label><br>
+      <label><input type="checkbox" class = "get_value" id = "peach"  value="peach"> Peach</label><br>
+      <label><input type="checkbox" class = "get_value" id = "cherry"  value="cherry"> Cherry</label><br>
+      <label><input type="checkbox" class = "get_value" id = "plum"  value="plum"> Plum</label><br>
+      <label><input type="checkbox" class = "get_value" id = "strawberry" value="strawberry"> Strawberry</label><br>
+      <label><input type="checkbox" class = "get_value" id = "blackberry" value="blackberry"> Blackberry</label><br>
+      <label><input type="checkbox" class = "get_value" id = "raspberry"  value="raspberry"> Raspberry</label><br>
     </div>
-    <button id="submitBtn" type="button">Submit</button>
+    <div class="button">
+      <button type="submit">Submit Quiz</button>
+    </div>
   </form>
-  <script>
-    let submitBtn = document.getElementById("submitBtn");
-
-    submitBtn.onclick = function(){
-      window.location.href = "quiz_submitted.html";
-    }
-  </script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#quiz-form').on('submit', function(e) {
+            e.preventDefault();
+                var insert = [];
+                  $('.get_value').each(function() {
+                    if ($(this).is(":checked")) {
+                        insert.push($(this).val());
+                    }
+                });
+                var insert_string = 'checkboxvalue='+insert; 
+                $.ajax({
+                    method: "POST",
+                    url: "/quiz",
+                    data: insert_string,
+                    content: 'application/json',
+                    success: function(data){    
+                        $("#result").html(data);
+                        window.location.href = './quiz_submitted';
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
