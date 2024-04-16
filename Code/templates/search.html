@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Introduction quiz to gain user information">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/stylesheet.css') }}">
+    <script src="https://kit.fontawesome.com/3e4426112a.js" crossorigin="anonymous"></script>
+    <title>BlendBud</title>
+    <style>
+        #dropdownContainer {
+            position: relative;
+            display: inline-block;
+        }
+        #searchQuery {
+            width: 400px;
+        }
+        #searchResults {
+            display: none; 
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            max-height: 300px; 
+            overflow-y: auto;
+        }
+
+        #searchResults div {
+            padding: 12px 16px;
+            cursor: pointer;
+            border-bottom: 1px solid #ddd; 
+        }
+
+        #searchResults a {
+            font-weight: bold;
+            color: black;
+            text-decoration: none;
+        }
+
+        #searchResults a:hover {
+            text-decoration: underline;
+        }
+        #searchResults div:hover {
+            background-color: #f1f1f1; 
+        }
+    </style>
+</head>
+<body>
+    <section class="header">
+        <nav>
+            <div class="logo">
+                <h1>LOGO PLACEHOLDER</h1>
+            </div>
+            <div class="nav-links">
+                <ul>
+                    <li><a href="{{ url_for('auth.login') }}">LOG IN</a></li>
+                    <li><a href="{{ url_for('auth.signup') }}">SIGN UP</a></li>
+                    <li><a href="{{ url_for('auth.profile_page') }}">PROFILE</a></li>
+                </ul>
+            </div>
+        </nav>
+        <div id="dropdownContainer">
+            <form class="search-form" id="searchForm">
+                <input type="text" id="searchQuery" placeholder="Search for wines...">
+                <button type="submit">
+                    <i class="fa fa-search" style="font-size: 18px;"></i>
+                </button>
+            </form>
+            <div id="searchResults"></div>
+        </div>
+        
+    </section>
+    
+    
+
+    <div class="search-suggestions" id="suggestions" style="display:none;">
+        <h2>SUGGESTIONS FOR YOU</h2>
+        <div class="image-container-search">
+            <img src="images/winebottle.png" alt="Image 1">
+            <img src="images/winebottle.png" alt="Image 2">
+            <img src="images/winebottle.png" alt="Image 3">
+            <img src="images/winebottle.png" alt="Image 4">
+        </div>
+    </div>
+
+
+    <div class="search-suggestions" id="recentSearches" style="display:none;">
+        <h2>RECENT SEARCHES</h2>
+        <div class="image-container-search">
+            <img src="images/winebottle.png" alt="Image 1">
+            <img src="images/winebottle.png" alt="Image 2">
+            <img src="images/winebottle.png" alt="Image 3">
+            <img src="images/winebottle.png" alt="Image 4">
+        </div>
+    </div>
+
+    <footer>
+        <div id="contact">
+            <h2>Get in touch!</h2>
+            <div class="socials">
+                <a href="#" class="fa fa-facebook"></a>
+                <a href="#" class="fa fa-twitter"></a>
+                <a href="#" class="fa fa-instagram"></a>
+                <a href="#" class="fa fa-linkedin"></a>
+            </div>
+            <div class="send-email">
+                <form method="POST" action="submission.html">
+                    <label for="name">Name</label><br>
+                    <input type="text" name="name" id="name" rows="4" cols="50" required><br>
+                    <label for="email">Email</label><br>
+                    <input type="email" name="email" id="email" required><br>
+                    <label for="message">Message</label><br>
+                    <textarea name="message" id="message" rows="4" cols="50" required></textarea><br>
+                    <input type="submit" value="Send Message">
+                </form>
+            </div>
+        </div>
+    </footer>
+    <script>
+       document.getElementById("searchForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+        const searchQuery = document.getElementById("searchQuery").value;
+
+        fetch(`http://localhost:5000/search?query=${searchQuery}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                const searchResults = document.getElementById("searchResults");
+                searchResults.innerHTML = '';
+                searchResults.style.display = 'block'; 
+
+                data.forEach(wine => {
+                    const div = document.createElement("div");
+                    const wineUrl = `/description/${wine._id}`;
+                    div.innerHTML = `<a href="${wineUrl}" style="font-weight:bold; color:black; text-decoration:none;">${wine.name}</a>`;
+                    searchResults.appendChild(div);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    });
+
+        </script>
+
+</body>
+</html>
