@@ -64,12 +64,37 @@ def profile_page():
         return jsonify({"error": "User not found"}), 404
 
 
+@search_blueprint.route('/user_profile/<username>')
+@jwt_required(optional=False)
+def user_profile_page(username):
+    current_userid = get_jwt_identity()
+    users = mongo.db.user
+    current_user = users.find_one({"_id": current_userid})
+    user_data = users.find_one({"username": username})
+    if not user_data:
+        return jsonify({"error": "Wine not found"}), 404
+    return render_template('user_profile.html', user=user_data, current_user=current_user)
+
 @auth_blueprint.route('/home')
+@jwt_required(optional=False)
 def home():
+    print("Accessing home page")
+    current_user = get_jwt_identity()
+    users = mongo.db.user
+    user_data = users.find_one({'_id': ObjectId(current_user)})
+    if user_data:
+        return render_template('home.html', current_user=current_user)
     return render_template('home.html')
 
 @auth_blueprint.route('/community')
+@jwt_required(optional=False)
 def community():
+    print("Accessing the community page")
+    current_user = get_jwt_identity()
+    users = mongo.db.user
+    user_data = users.find_one({'_id': ObjectId(current_user)})
+    if user_data:
+        return render_template('community.html', current_user=current_user)
     return render_template('community.html')
 
 @auth_blueprint.route('/search-page')
@@ -83,6 +108,15 @@ def show_community_search():
 @auth_blueprint.route('/about')
 def about():
     return render_template('about.html')
+
+@auth_blueprint.route('/intro_quiz', methods=["GET"])
+@jwt_required(optional=False)
+def intro_quiz():
+    return render_template('intro_quiz.html')
+
+@auth_blueprint.route('/quiz_submitted')
+def submitted():
+    return render_template('quiz_submitted.html')
 
 '''
 1. Register (/register)
@@ -241,13 +275,15 @@ def search_user():
                     'index': 'profile',
                     'text': {
                         'query': query,
-                        'path': ['username']
+                        'path': ['username', 'email']
                     }
                 }
             },
-            {'$limit': 20}
+            {'$limit': 20},
+            {'$project': {'_id':0, 'username':1}}
         ])
         results = list(search_result)
+        print("results:", results)
         return jsonify(results)
     else:
         return render_template('community_search.html')
@@ -637,84 +673,122 @@ def check_favorite():
 
 
 '''
-12. 
+12. User Suggestions
 Method: GET
 URL: /auth/top_wines
-Description: return 20 top wines in rating
+Description: return the top 5 suggested wines for a user
 Content:
-20 top wines
+5 top suggested wines for the user (requires authentication)
 '''
 
 @search_blueprint.route('/top_wines', methods=['GET'])
-def top_wines():
-    wines_collection = mongo.db.wines
-    top_wines = wines_collection.find().sort("average_rating", -1).limit(20)
-
-    top_wines_list = list(top_wines)
-    return jsonify(dumps(top_wines_list)), 200
-
-
-'''
-13.
-Method: GET
-URL: /auth/suggest_wines
-Description: returns top 5 suggested wines for the user
-Content:
-5 suggested wines
-'''
-
-@auth_blueprint.route('/suggest_wines', methods=['POST'])
 @jwt_required()
-def suggest_wines():
+def top_wines():
     user_id = get_jwt_identity()
-    data = request.get_json()
     suggestions = []
-
     pref_doc = mongo.db.preferences.find_one({"user_id": ObjectId(user_id)})
+    if not pref_doc:
+        print('User has no preferences indicated')
+        suggestions = suggest.suggest_wines("flavor", [])
+        to_suggest = get_suggestion_names(suggestions)
+        return to_suggest, 200
+        
     like_pref = pref_doc.get('like_pref', [])
     flav_pref = pref_doc.get('flav_pref', [])
-
-    if not pref_doc:
-        suggestions = suggest.suggest_wines("flavor", [])
-        #return jsonify({suggestions}), 200
-
-    if len(like_pref > 0):
+    print("DO NOT RECOMMEND THESE ALREADY LIKED: ", like_pref)
+    if len(like_pref) > 0:
+        print("Suggesting based on liked wines")
         suggestions = suggest.suggest_wines("like", like_pref)
-        #return jsonify({suggestions}), 200
-
-    elif len(like_pref == 0):
+    elif len(like_pref) == 0:
+        print("Suggesting based on liked flavors, or for empty user")
         suggestions = suggest.suggest_wines("flavor", flav_pref)
-        #return jsonify({suggestions}), 200
 
-    suggestions_cursor = mongo.db.wines.find({'_id': {'$in': suggestions}})
+    to_suggest = get_suggestion_names(suggestions)
+    return to_suggest, 200      # returns a list of names rn
+
+def get_suggestion_names(suggestions):
+    suggestions_cursor = mongo.db.wines.find({'_id': {'$in': suggestions}}, {"_id": 0, "name": 1})
     suggestions_list = list(suggestions_cursor)
-    return jsonify(dumps(suggestions_list)), 200
-
+    to_suggest = []
+    for s in suggestions_list:
+        print(s["name"])
+        to_suggest.append(s["name"])
+    return to_suggest
 
 '''
-14.
+13. Blend Suggestions (2 Users)
 Method: GET
-URL: /auth/suggest_blends
-Description: returns top 5 suggested wines for the blend between two users
+URL: /auth/top_blends
+Description: return the top 5 suggested blend wines for two users
 Content:
-5 suggested blends wines
+5 top suggested blended wines for the two users (requires authentication)
 '''
 
-@auth_blueprint.route('/suggest_blends', methods=['POST'])
+@auth_blueprint.route('/top_blends', methods=['GET'])
 @jwt_required()
-def suggest_wines_blend():
+def top_blends():
     user_id = get_jwt_identity()
-    data = request.get_json()
-    user_id2 = data.get('user_id2')
+    username2 = request.args.get('username')
+    user_id2 = mongo.db.user.find_one({"username": username2})
 
     pref_doc1 = mongo.db.preferences.find_one({"user_id": ObjectId(user_id)})
-    like_pref1 = pref_doc1.get('like_pref', [])
-    flav_pref1 = pref_doc1.get('flav_pref', [])
-    pref_doc2 = mongo.db.preferences.find_one({"user_id": ObjectId(user_id2)})
-    like_pref2 = pref_doc2.get('like_pref', [])
-    flav_pref2 = pref_doc2.get('flav_pref', [])
+    like_pref1 = pref_doc1.get('like_pref', []) if pref_doc1 else []
+    flav_pref1 = pref_doc1.get('flav_pref', []) if pref_doc1 else []
+    pref_doc2 = mongo.db.preferences.find_one({"user_id": user_id2})
+    like_pref2 = pref_doc2.get('like_pref', []) if pref_doc2 else []
+    flav_pref2 = pref_doc2.get('flav_pref', []) if pref_doc2 else []
 
     suggestions = suggest.suggest_wine_blend(like_pref1, flav_pref1, like_pref2, flav_pref2)
     suggestions_cursor = mongo.db.wines.find({'_id': {'$in': suggestions}})
     suggestions_list = list(suggestions_cursor)
-    return jsonify(dumps(suggestions_list)), 200
+    to_suggest = []
+    for s in suggestions_list:
+        print(s["name"])
+        to_suggest.append(s["name"])
+    return to_suggest, 200
+
+
+'''
+15.
+Method: POST
+URL: /auth/quiz
+Description: submits quiz results to the preferences table in the data base
+Content:
+A list of liked flavors
+'''
+@auth_blueprint.route('/quiz', methods=['POST'])
+@jwt_required()
+def quiz():
+    user_id = get_jwt_identity()
+    preferences = mongo.db.preferences
+
+    insert = request.form['checkboxvalue']
+
+    check_user = preferences.find_one({"user_id": ObjectId(user_id)})
+
+    if check_user:
+        mongo.db.preferences.update_one(
+            {"user_id": ObjectId(user_id)},
+            {"$set": {"flavor_pref": insert}}
+        )
+    else:
+        mongo.db.preferences.insert_one({
+            "user_id": ObjectId(user_id),
+            "flavor_pref": insert
+        })
+
+    return jsonify({"message": "Preferences updated successfully", "user_id": str(user_id)}), 200
+
+'''
+16.
+Method: POST
+URL: /auth/logout
+Description: Removes access token from a user to logout
+Content:
+access token
+'''
+@auth_blueprint.route('/logout', methods=['POST'])
+def logout():
+    response = make_response(jsonify({"message": "Logout successful"}))
+    response.set_cookie('access_token_cookie', '')
+    return response

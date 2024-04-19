@@ -15,7 +15,7 @@ def create_app():
     login_manager.init_app(app)
     app.config['JWT_TOKEN_LOCATION'] = ['cookies']
     app.config['JWT_COOKIE_SECURE'] = False 
-    app.config['JWT_COOKIE_CSRF_PROTECT'] = True
+    app.config['JWT_COOKIE_CSRF_PROTECT'] = False
     jwt = JWTManager(app)
     jwt.init_app(app)
     

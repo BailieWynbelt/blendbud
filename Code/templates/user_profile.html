@@ -23,7 +23,7 @@
             </div>
         </nav>
         <div class = "page-selection">
-            <div class = button-selection>
+             <div class = button-selection>
                 <i class="fa-solid fa-house"></i>
                 <a href="{{ url_for('auth.home') }}"><button class="home-selection">Home</button></a>
             </div>
@@ -41,13 +41,15 @@
             </div>
         </div>
     </section>
-    <section class="community-text">
-        <h2>BlendBud is better with friends</h2>
-        <p>Add you buds and find wines that align with both of your tastes!</p>
+    <div class = general-description>
+        <img src="images/winebottle.png" alt="Image 1">
+        <span>
+            <h2 id="username">{{user.username}}</h2>
+        </span>
+        <button id="blend-test" class="profile-selection">Blend with {{username}}</button>
+        <div id="section-test">Testing...</div>
 
-    </section>
-    <div class="nav-links-community">
-            <a href="{{ url_for('auth.show_community_search')}}"><button class="profile-selection">Search Profiles</button></a>
+
     </div>
     <footer>
         <div id="contact">
@@ -71,5 +73,30 @@
             </div>
         </div>
     </footer>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function() {
+      $('#blend-test').on('click', function(e) {
+        e.preventDefault();
+        var username = document.getElementById("username").value;
+        var data = {"username":username}
+        $.ajax({
+          type: 'GET',
+          url: 'http://127.0.0.1:5000/top_blends',
+          data: data,
+          dataType: 'text',
+          success: function(data) {
+            console.log("Blend successful", data);
+            $("#section-test").text(data).show();
+          },
+          error: function(xhr, status, error) {
+            var err = xhr.responseJSON ? xhr.responseJSON.error : 'Blending failed';
+            $("#section-test").text(err).show();
+          }
+        });
+      });
+    });
+    </script>
 </body>
 </html>

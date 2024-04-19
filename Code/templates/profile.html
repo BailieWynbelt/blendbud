@@ -50,13 +50,12 @@
             </div>
             </div>
             <div class="profile-buttons">
-            <button>Edit Profile</button>
+            <button id = logout-bttn > Log Out </button>
             <a href="https://www.niaaa.nih.gov/publications/brochures-and-fact-sheets/treatment-alcohol-problems-finding-and-getting-help" target="_blank">
                 <button>Resources</button>
             </a>
             </div>
         </div>
-    <h2>Recent Posts</h2>
 
 
 
@@ -84,5 +83,20 @@
         </div>
     </footer>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#logout-bttn').on('click', function() {
+                $.ajax({
+                    method: "POST",
+                    url: "/logout",
+                    content: 'application/json',
+                    success: function(response){    
+                        window.location.href = './login';
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

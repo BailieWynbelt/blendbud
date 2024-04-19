@@ -25,11 +25,11 @@ def trim_suggestions(initial_suggestions, df_pref, wine_df):
     new_suggestions = pd.concat([initial_suggestions, df_pref])
     new_suggestions.drop_duplicates(subset=['name'], keep=False, inplace=True)
     if (len(new_suggestions.index) > 5):
-        return new_suggestions.head(5)
+        return new_suggestions.sample(5)
     else:
         to_add = wine_df.head(5)
         new_suggestions = pd.concat([initial_suggestions, to_add])
-        return new_suggestions.head(5)
+        return new_suggestions.sample(5)
     return new_suggestions
 
 """ Creates KMeans clustering model (n=6) based on the numeric columns of wine data
@@ -105,9 +105,10 @@ def suggest_failsafe_wines():
     wine_collection = db.wines
     top_wines = wine_collection.find().sort("average_rating", -1).limit(20)
     cheap_top_wines = top_wines.sort("price_amount").limit(5)
-    print("cheapy:", list(cheap_top_wines))
-    #suggestions = ["1386686","5177761","1649800","8890662","2472"]
-    return cheap_top_wines
+    suggestions = []
+    for wine in cheap_top_wines:
+        suggestions.append(wine["_id"])
+    return suggestions
 
 """ Creates wine suggestions for two users based on their wine and flavor preferences
     @param like_pref1, flav_pref1: preferences arrays from user1
@@ -121,10 +122,15 @@ def suggest_wine_blend(like_pref1, flav_pref1, like_pref2, flav_pref2):
     # Combining the two users' likes/flavors preferences and deciding to suggest based on wine or flavor:
     like_pref = like_pref1 + like_pref2
     flav_pref = flav_pref1 + flav_pref2
+    print("like_pref:", like_pref)
+    print("flav_pref:", flav_pref)
     if len(like_pref) > 0:
+        print("suggesting based on known liked wines")
         return suggest_wine_known_pref(wine_df, like_pref)
     elif len(like_pref) == 0:
+        print("suggesting based on flavors")
         return suggest_wine_generic(wine_df, flav_pref)
+    print("returning failsafe wines")
     return suggest_failsafe_wines
 
 """ Get wine suggestions for a user based on past wines they liked (if available), or flavors they
@@ -164,7 +170,7 @@ def test_suggestions(wine_df):
 """
 #def main():
 #    print("hi")
-#    suggest_failsafe_wines()
+#    print(suggest_failsafe_wines())
 #    client = MongoClient('mongodb+srv://servad:Ta527eZ3eqUWeA9s@tastebud.opgas9v.mongodb.net/')
 #    db = client['TasteBud']
 #    wine_df = get_wine_df(db)
