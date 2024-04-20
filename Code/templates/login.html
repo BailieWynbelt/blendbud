@@ -3,23 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/stylesheet.css') }}">
   <title>Login to BlendBud</title>
 </head>
-<body>
-  <form id="login-form">
-    <div>
-      <label for="mail">Email:</label>
-      <input type="email" id="mail" name="email" />
-    </div>
+<body class = "to-start">
+    <div class="login-form">
+      <h2>LOG IN </h2>
+      <form id="login-form">
+        <div>
+          <label for="mail">Email:</label>
+          <input type="email" id="mail" name="email" />
+        </div>
 
-    <div>
-      <label for="password">Password:</label>
-      <input type="password" id="password" name="password" />
-    </div>
+        <div>
+          <label for="password">Password:</label>
+          <input type="password" id="password" name="password" />
+        </div>
 
-    <div class="button">
-      <button type="submit">Login</button>
-    </div>
+        <div class="log-bttn">
+          <button type="submit">LOG IN</button>
+        </div>
+      <p>Need an account?</p>
+      <a href="http://localhost:5000/signup">SIGN UP</a>
   </form>
 
   <div id="output-login"></div>
@@ -33,7 +38,7 @@
 
       $.ajax({
         type: 'POST',
-        url: 'http://127.0.0.1:5000/login',
+        url: 'http://localhost:5000/login',
         processData: false,
         contentType: false,
         data: formData,
