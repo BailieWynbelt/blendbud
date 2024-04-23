@@ -8,16 +8,18 @@
     <script src="https://kit.fontawesome.com/3e4426112a.js" crossorigin="anonymous"></script>
     <title>BlendBud</title>
 </head>
-<body style="background-color:rgba(124, 31, 98, 0.07);">
+<body style = "background-color:rgba(124, 31, 98, 0.1);">
+  <div class = "top-intro-quiz">
   <h1>We'd love to get to know you better...</h1>
   <p>Take our personalized quiz to enhance your recommendation</p>
+  </div>
   <form id = 'quiz-form' action="/quiz" method='POST'>
     <div class="question">
       <h2>Question 1</h2>
       <p>What is your experience level with wine?</p>
       <label><input type="radio" name="q1" value="option1">I know nothing!</label><br>
-      <label><input type="radio" name="q1" value="option2">I know of wine.</label><br>
-      <label><input type="radio" name="q1" value="option3">I feel somewhat comfortable but need guidance.</label><br>
+      <label><input type="radio" name="q1" value="option2">I know of wine</label><br>
+      <label><input type="radio" name="q1" value="option3">I feel somewhat comfortable but need guidance</label><br>
       <label><input type="radio" name="q1" value="option4">I would consider myself an expert!</label><br>
     </div>
     <div class="question">
@@ -66,7 +68,7 @@
       <label><input type="checkbox" class = "get_value" id = "blackberry" value="blackberry"> Blackberry</label><br>
       <label><input type="checkbox" class = "get_value" id = "raspberry"  value="raspberry"> Raspberry</label><br>
     </div>
-    <div class="button">
+    <div class="quiz-submit-button">
       <button type="submit">Submit Quiz</button>
     </div>
   </form>
