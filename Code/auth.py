@@ -53,10 +53,12 @@ def login_page():
     return render_template('login.html')
 
 @auth_blueprint.route('/profile', methods=["GET"])
-@jwt_required(optional=False)
+@jwt_required(optional=True)
 def profile_page():
     print("Accessing profile page")
     current_user = get_jwt_identity()
+    if not current_user:
+        return render_template('login.html')
     users = mongo.db.user
     user_data = users.find_one({"_id": ObjectId(current_user)})
 
@@ -69,12 +71,14 @@ def profile_page():
 
 
 @search_blueprint.route('/user_profile/<username>')
-@jwt_required(optional=False)
+@jwt_required(optional=True)
 def user_profile_page(username):
     current_userid = get_jwt_identity()
     users = mongo.db.user
-    current_user = users.find_one({"_id": current_userid})
     user_data = users.find_one({"username": username})
+    if not current_userid:
+        return render_template('user_profile.html', user=user_data)
+    current_user = users.find_one({"_id": current_userid})
     if not user_data:
         return jsonify({"error": "Wine not found"}), 404
     return render_template('user_profile.html', user=user_data, current_user=current_user)
@@ -93,10 +97,12 @@ def home():
     return render_template('home.html')
 
 @auth_blueprint.route('/community')
-@jwt_required(optional=False)
+@jwt_required(optional=True)
 def community():
     print("Accessing the community page")
     current_user = get_jwt_identity()
+    if not current_user:
+        return render_template('community.html')
     users = mongo.db.user
     user_data = users.find_one({'_id': ObjectId(current_user)})
     if user_data:
@@ -740,9 +746,11 @@ Content:
 '''
 
 @auth_blueprint.route('/top_blends', methods=['GET'])
-@jwt_required(optional=False)
+@jwt_required(optional=True)
 def top_blends():
     user_id = get_jwt_identity()
+    if not user_id:
+        return "Must be logged in to blend with another user", 400
     username2 = request.args.get('username')
     user_id2 = mongo.db.user.find_one({"username": username2})
 
@@ -754,13 +762,14 @@ def top_blends():
     flav_pref2 = pref_doc2.get('flav_pref', []) if pref_doc2 else []
 
     suggestions = suggest.suggest_wine_blend(like_pref1, flav_pref1, like_pref2, flav_pref2)
-    suggestions_cursor = mongo.db.wines.find({'_id': {'$in': suggestions}})
-    suggestions_list = list(suggestions_cursor)
-    to_suggest = []
-    for s in suggestions_list:
-        print(s["name"])
-        to_suggest.append(s["name"])
-    return to_suggest, 200
+    to_suggest = get_suggestion_names(suggestions)
+    #suggestions_cursor = mongo.db.wines.find({'_id': {'$in': suggestions}})
+    #suggestions_list = list(suggestions_cursor)
+    #to_suggest = []
+    #for s in suggestions_list:
+        #print(s["name"])
+        #to_suggest.append({"id": s["_id"], "name": s["name"], "average_rating": s["average_rating"]})
+    return jsonify(dumps(to_suggest)), 200
 
 
 '''

@@ -91,7 +91,7 @@
             $("#section-test").text(data).show();
           },
           error: function(xhr, status, error) {
-            var err = xhr.responseJSON ? xhr.responseJSON.error : 'Blending failed';
+            var err = xhr.responseJSON ? xhr.responseJSON.error : 'You must login before blending with this user';
             $("#section-test").text(err).show();
           }
         });
