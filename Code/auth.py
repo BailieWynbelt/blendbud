@@ -14,6 +14,10 @@ auth_blueprint = Blueprint('auth', __name__)
 
 search_blueprint = Blueprint('search', __name__)
 
+@auth_blueprint.route('/')
+def index():
+    return redirect(url_for('home'))
+
 @auth_blueprint.route('/protected', methods=['GET'])
 @jwt_required()
 def protected_route():
