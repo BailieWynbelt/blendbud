@@ -47,7 +47,7 @@
         }
     </style>
 </head>
-<body>
+<body style="background-color:rgba(124, 31, 98, 0.07);">
     <section class="header">
         <nav>
             <div class="logo">
@@ -101,7 +101,7 @@
          event.preventDefault();
          const searchQuery = document.getElementById("searchQuery").value;
  
-         fetch(`http://127.0.0.1:5000/search_user?query=${searchQuery}`) //localhost/login
+         fetch(`http://localhost:5000/search_user?query=${searchQuery}`) //localhost/login
              .then(response => {
                  if (!response.ok) {
                      throw new Error(`HTTP error! Status: ${response.status}`);

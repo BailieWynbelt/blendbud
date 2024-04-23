@@ -8,11 +8,11 @@
     <script src="https://kit.fontawesome.com/3e4426112a.js" crossorigin="anonymous"></script>
     <title>BlendBud</title>
 </head>
-<body>
+<body style="background-color:rgba(124, 31, 98, 0.07);">
     <section class="header">
         <nav>
             <div class="logo">
-                <h1>LOGO PLACEHOLDER</h1>
+                <a href="{{ url_for('static', filename='images/logo.png') }}">
             </div>
             <div class="nav-links">
                 <ul>
@@ -61,7 +61,7 @@
     </div>
 
     <div class="profile-card">
-      <img class="profile-picture" src="{{ url_for('static', filename='images/profile.jpg') }}" alt="Profile Picture">
+      <img class="profile-picture" src="{{ url_for('static', filename='images/erin_headshot.jpg') }}" alt="Profile Picture">
       <div class="profile-container">
         <h2>Erin Berridge</h2>
         <p class="title">Algorithmn Developer</p>
@@ -84,6 +84,7 @@
       </div>
     </div>
 </div>
+
 </body>
     <footer>
         <div id="contact">

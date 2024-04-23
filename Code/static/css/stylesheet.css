@@ -725,16 +725,24 @@ footer {
 
 .profile-card {
     width: 200px;
-    margin: 30px; 
+    margin: 50px; 
     text-align: center;
 
 }
 
 .profile-picture {
-    width: 175px;
-    height: 175px;
+    width: auto;
+    max-width: 275px;
+    height: 275px;
 }
 
 .profile-container {
     margin-top: 10px; 
 }
+
+.logo {
+    width: auto;
+    max-width: 30px;
+    height: 30px;
+}
+
