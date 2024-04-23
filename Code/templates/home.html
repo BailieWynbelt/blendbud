@@ -123,7 +123,7 @@ function showSlides(n) {
 $(document).ready(function() {
     $.ajax({
         type: 'GET',
-        url: 'http://127.0.0.1:5000/top_wines',
+        url: 'http://localhost:5000/top_wines',
         processData: false,
         contentType: false,
         data: '',
@@ -131,26 +131,19 @@ $(document).ready(function() {
         success: function(data) {
             localStorage.getItem('token');
             console.log("Suggestions loaded successful", data);
-            //$("#suggestions").text(data);
             data = JSON.parse(data);
-            console.log("Type: ", typeof data);
-            console.log("Name: ", data[0].name, " Average Rating: ", data[0].average_rating);
             const suggestionResults = document.getElementById("suggestions");
             for(var i=0; i<=data.length-1;i++) {
-                console.log("hello: ", data[i].name, data[i].average_rating, data[i].id);
                 const id = data[i].id;
                 const name = data[i].name;
+                const rating = data[i].average_rating;
+                console.log("id: ", id);
                 const div = document.createElement("div");
-                const wineUrl = '/description/${id}';
-                div.innerHTML = `<a href="${wineUrl}" style="font-weight:bold; color:black; text-decoration:none;">${name}</a>`;
+                const wineUrl = "/description/".concat(id)
+                console.log("url: ", wineUrl);
+                div.innerHTML = `<a href="${wineUrl}" style="font-weight:bold; color:black; text-decoration:none;">${name}, ${rating}</a>`;
                 suggestionResults.appendChild(div);
             }
-            //const div = document.createElement("div");
-            //const wineUrl = `/description/${wine._id}`;
-            //console.log("wine id: ", wine._id)
-            //console.log("wineurl: ", wineUrl);
-            //div.innerHTML = `<a href="${wineUrl}" style="font-weight:bold; color:black; text-decoration:none;">${wine.name}</a>`;
-            //$("#suggestions").text("ok").show();
         },
         error: function(xhr, status, error) {
             console.log("something in here");

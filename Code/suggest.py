@@ -82,6 +82,7 @@ def suggest_wine_known_pref(wine_df, pref_ids):
 """
 def suggest_wine_generic(wine_df, pref_flavors):
     # Get wines that have flavors matching our user's top flavor:
+    print("pref flavors:", pref_flavors)
     flav_suggestions = pd.DataFrame().reindex_like(wine_df)
     for index, row in wine_df.iterrows():
         if any(flavor in row['flavor_profile'] for flavor in pref_flavors):
@@ -120,6 +121,7 @@ def suggest_wine_blend(like_pref1, flav_pref1, like_pref2, flav_pref2):
     db = client['TasteBud']
     wine_df = get_wine_df(db)
     # Combining the two users' likes/flavors preferences and deciding to suggest based on wine or flavor:
+    print(like_pref1, like_pref2, flav_pref1, flav_pref2)
     like_pref = like_pref1 + like_pref2
     flav_pref = flav_pref1 + flav_pref2
     print("like_pref:", like_pref)

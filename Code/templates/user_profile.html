@@ -47,7 +47,9 @@
             <h2 id="username">{{user.username}}</h2>
         </span>
         <button id="blend-test" class="profile-selection">Blend with {{username}}</button>
-        <div id="section-test">Testing...</div>
+        <div class="search-suggestions">
+        <div id="suggestions"></div>
+        </div>
 
 
     </div>
@@ -83,20 +85,33 @@
         var data = {"username":username}
         $.ajax({
           type: 'GET',
-          url: 'http://127.0.0.1:5000/top_blends',
+          url: 'http://localhost:5000/top_blends',
+          processData: false,
+          contentType: false,
           data: data,
-          dataType: 'text',
+          dataType: 'text json',
           success: function(data) {
-            console.log("Blend successful", data);
-            $("#section-test").text(data).show();
+            data = JSON.parse(data);
+            const suggestionResults = document.getElementById("suggestions");
+            for(var i=0; i<=data.length-1;i++) {
+                const id = data[i].id;
+                const name = data[i].name;
+                const rating = data[i].average_rating;
+                const div = document.createElement("div");
+                const wineUrl = "/description/".concat(id);
+                div.innerHTML = `<a href="${wineUrl}" style="font-weight:bold; color:black; text-decoration:none;">${name}, ${rating}</a>`;
+                suggestionResults.appendChild(div);
+            }
+            //$("#section-test").text(data).show();
           },
           error: function(xhr, status, error) {
             var err = xhr.responseJSON ? xhr.responseJSON.error : 'You must login before blending with this user';
-            $("#section-test").text(err).show();
+            $("#suggestions").text(err).show();
           }
         });
       });
     });
     </script>
+
 </body>
 </html>

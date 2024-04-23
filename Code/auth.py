@@ -700,9 +700,10 @@ def top_wines():
 
     if not user_id:
         wines_collection = mongo.db.wines
-        top_wines = wines_collection.find().sort("average_rating",-1).limit(20)
-        top_wines_list = list(top_wines)
-        return jsonify(dumps(top_wines_list)), 200
+        top_wines = wines_collection.find({},{"_id": 1}).sort("average_rating",-1).limit(20)
+        top_wines_ids = [wine["_id"] for wine in top_wines]
+        to_suggest = get_suggestion_names(top_wines_ids)
+        return jsonify(dumps(to_suggest)), 200
 
     suggestions = []
     pref_doc = mongo.db.preferences.find_one({"user_id": ObjectId(user_id)})
@@ -710,7 +711,7 @@ def top_wines():
         print('User has no preferences indicated')
         suggestions = suggest.suggest_wines("flavor", [])
         to_suggest = get_suggestion_names(suggestions)
-        return to_suggest, 200
+        return jsonify(dumps(to_suggest)), 200
         
     like_pref = pref_doc.get('like_pref', [])
     flav_pref = pref_doc.get('flav_pref', [])
@@ -724,7 +725,6 @@ def top_wines():
 
     to_suggest = get_suggestion_names(suggestions)
     return jsonify(dumps(to_suggest)), 200      # returns a list of names and average_ratings rn
-    #return jsonify({"suggested_ids": suggestions}), 200
 
 def get_suggestion_names(suggestions):
     suggestions_cursor = mongo.db.wines.find({'_id': {'$in': suggestions}}, {"_id": 1, "name": 1, "average_rating": 1})
@@ -752,6 +752,9 @@ def top_blends():
     if not user_id:
         return "Must be logged in to blend with another user", 400
     username2 = request.args.get('username')
+    #um2 = request.query_string.decode()
+    #print("username2:", username2)
+    #print("um2:", um2)
     user_id2 = mongo.db.user.find_one({"username": username2})
 
     pref_doc1 = mongo.db.preferences.find_one({"user_id": ObjectId(user_id)})
@@ -763,12 +766,7 @@ def top_blends():
 
     suggestions = suggest.suggest_wine_blend(like_pref1, flav_pref1, like_pref2, flav_pref2)
     to_suggest = get_suggestion_names(suggestions)
-    #suggestions_cursor = mongo.db.wines.find({'_id': {'$in': suggestions}})
-    #suggestions_list = list(suggestions_cursor)
-    #to_suggest = []
-    #for s in suggestions_list:
-        #print(s["name"])
-        #to_suggest.append({"id": s["_id"], "name": s["name"], "average_rating": s["average_rating"]})
+
     return jsonify(dumps(to_suggest)), 200
 
 

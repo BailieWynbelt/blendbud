@@ -746,3 +746,6 @@ footer {
     height: 30px;
 }
 
+.image-container-search {
+  display: block;
+}
