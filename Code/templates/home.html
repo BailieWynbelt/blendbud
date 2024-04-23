@@ -127,11 +127,29 @@ $(document).ready(function() {
         processData: false,
         contentType: false,
         data: '',
-        dataType: 'text',
+        dataType: 'text json',
         success: function(data) {
             localStorage.getItem('token');
             console.log("Suggestions loaded successful", data);
-            $("#suggestions").text(data);
+            //$("#suggestions").text(data);
+            data = JSON.parse(data);
+            console.log("Type: ", typeof data);
+            console.log("Name: ", data[0].name, " Average Rating: ", data[0].average_rating);
+            const suggestionResults = document.getElementById("suggestions");
+            for(var i=0; i<=data.length-1;i++) {
+                console.log("hello: ", data[i].name, data[i].average_rating, data[i].id);
+                const id = data[i].id;
+                const name = data[i].name;
+                const div = document.createElement("div");
+                const wineUrl = '/description/${id}';
+                div.innerHTML = `<a href="${wineUrl}" style="font-weight:bold; color:black; text-decoration:none;">${name}</a>`;
+                suggestionResults.appendChild(div);
+            }
+            //const div = document.createElement("div");
+            //const wineUrl = `/description/${wine._id}`;
+            //console.log("wine id: ", wine._id)
+            //console.log("wineurl: ", wineUrl);
+            //div.innerHTML = `<a href="${wineUrl}" style="font-weight:bold; color:black; text-decoration:none;">${wine.name}</a>`;
             //$("#suggestions").text("ok").show();
         },
         error: function(xhr, status, error) {

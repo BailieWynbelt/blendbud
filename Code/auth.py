@@ -80,10 +80,12 @@ def user_profile_page(username):
     return render_template('user_profile.html', user=user_data, current_user=current_user)
 
 @auth_blueprint.route('/home')
-@jwt_required(optional=False)
+@jwt_required(optional=True)
 def home():
     print("Accessing home page")
     current_user = get_jwt_identity()
+    if not current_user:
+        return render_template('home.html')
     users = mongo.db.user
     user_data = users.find_one({'_id': ObjectId(current_user)})
     if user_data:
@@ -686,9 +688,16 @@ Content:
 '''
 
 @search_blueprint.route('/top_wines', methods=['GET'])
-@jwt_required()
+@jwt_required(optional=True)
 def top_wines():
     user_id = get_jwt_identity()
+
+    if not user_id:
+        wines_collection = mongo.db.wines
+        top_wines = wines_collection.find().sort("average_rating",-1).limit(20)
+        top_wines_list = list(top_wines)
+        return jsonify(dumps(top_wines_list)), 200
+
     suggestions = []
     pref_doc = mongo.db.preferences.find_one({"user_id": ObjectId(user_id)})
     if not pref_doc:
@@ -708,15 +717,17 @@ def top_wines():
         suggestions = suggest.suggest_wines("flavor", flav_pref)
 
     to_suggest = get_suggestion_names(suggestions)
-    return to_suggest, 200      # returns a list of names rn
+    return jsonify(dumps(to_suggest)), 200      # returns a list of names and average_ratings rn
+    #return jsonify({"suggested_ids": suggestions}), 200
 
 def get_suggestion_names(suggestions):
-    suggestions_cursor = mongo.db.wines.find({'_id': {'$in': suggestions}}, {"_id": 0, "name": 1})
+    suggestions_cursor = mongo.db.wines.find({'_id': {'$in': suggestions}}, {"_id": 1, "name": 1, "average_rating": 1})
     suggestions_list = list(suggestions_cursor)
     to_suggest = []
     for s in suggestions_list:
         print(s["name"])
-        to_suggest.append(s["name"])
+        #to_suggest.append((s["name"], s["average_rating"]))
+        to_suggest.append({"id": s["_id"], "name": s["name"], "average_rating": s["average_rating"]})
     return to_suggest
 
 '''
@@ -729,7 +740,7 @@ Content:
 '''
 
 @auth_blueprint.route('/top_blends', methods=['GET'])
-@jwt_required()
+@jwt_required(optional=False)
 def top_blends():
     user_id = get_jwt_identity()
     username2 = request.args.get('username')
