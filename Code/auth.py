@@ -745,30 +745,27 @@ Content:
 5 top suggested blended wines for the two users (requires authentication)
 '''
 
-@auth_blueprint.route('/top_blends', methods=['GET'])
+@auth_blueprint.route('/top_blends', methods=['POST'])
 @jwt_required(optional=True)
 def top_blends():
     user_id = get_jwt_identity()
     if not user_id:
         return "Must be logged in to blend with another user", 400
-    username2 = request.args.get('username')
-    #um2 = request.query_string.decode()
-    #print("username2:", username2)
-    #print("um2:", um2)
-    user_id2 = mongo.db.user.find_one({"username": username2})
+    username2 = request.form.get('username')
+    user2 = mongo.db.user.find_one({"username": username2})
+    user_id2 =user2['_id']
 
-    pref_doc1 = mongo.db.preferences.find_one({"user_id": ObjectId(user_id)})
+    pref_doc1 = mongo.db.preferences.find_one({"user_id": user_id})
     like_pref1 = pref_doc1.get('like_pref', []) if pref_doc1 else []
-    flav_pref1 = pref_doc1.get('flav_pref', []) if pref_doc1 else []
+    flav_pref1 = pref_doc1.get('flavor_pref', []) if pref_doc1 else []
     pref_doc2 = mongo.db.preferences.find_one({"user_id": user_id2})
     like_pref2 = pref_doc2.get('like_pref', []) if pref_doc2 else []
-    flav_pref2 = pref_doc2.get('flav_pref', []) if pref_doc2 else []
+    flav_pref2 = pref_doc2.get('flavor_pref', []) if pref_doc2 else []
 
     suggestions = suggest.suggest_wine_blend(like_pref1, flav_pref1, like_pref2, flav_pref2)
     to_suggest = get_suggestion_names(suggestions)
 
     return jsonify(dumps(to_suggest)), 200
-
 
 '''
 15.

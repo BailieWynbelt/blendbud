@@ -121,7 +121,6 @@ def suggest_wine_blend(like_pref1, flav_pref1, like_pref2, flav_pref2):
     db = client['TasteBud']
     wine_df = get_wine_df(db)
     # Combining the two users' likes/flavors preferences and deciding to suggest based on wine or flavor:
-    print(like_pref1, like_pref2, flav_pref1, flav_pref2)
     like_pref = like_pref1 + like_pref2
     flav_pref = flav_pref1 + flav_pref2
     print("like_pref:", like_pref)

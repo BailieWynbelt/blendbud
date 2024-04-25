@@ -63,15 +63,18 @@
     $(document).ready(function() {
       $('#blend-test').on('click', function(e) {
         e.preventDefault();
-        var username = document.getElementById("username").value;
-        var data = {"username":username}
+        var user = document.getElementById("username").textContent;
+        console.log("this is the username:", user);
+        var formData = {
+          username: user
+        };
         $.ajax({
-          type: 'GET',
+          type: 'POST',
           url: 'http://localhost:5000/top_blends',
-          processData: false,
-          contentType: false,
-          data: data,
-          dataType: 'text json',
+          //processData: false,
+          //contentType: false,
+          data: formData,
+          dataType: 'json',
           success: function(data) {
             data = JSON.parse(data);
             const suggestionResults = document.getElementById("suggestions");
@@ -94,6 +97,8 @@
       });
     });
     </script>
+
+
 
 </body>
 </html>
