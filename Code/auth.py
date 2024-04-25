@@ -700,7 +700,7 @@ def top_wines():
 
     if not user_id:
         wines_collection = mongo.db.wines
-        top_wines = wines_collection.find({},{"_id": 1}).sort("average_rating",-1).limit(20)
+        top_wines = wines_collection.find({},{"_id": 1}).sort("average_rating",-1).limit(5)
         top_wines_ids = [wine["_id"] for wine in top_wines]
         to_suggest = get_suggestion_names(top_wines_ids)
         return jsonify(dumps(to_suggest)), 200

@@ -8,7 +8,7 @@
     <script src="https://kit.fontawesome.com/3e4426112a.js" crossorigin="anonymous"></script>
     <title>BlendBud</title>
 </head>
-<body>
+<body style="background-color:rgba(124, 31, 98, 0.1);">
 <div class="topnav">
   <img class = "logo" src="{{ url_for('static', filename='images/logo.png') }}" alt="BlendBud Logo">
   <div class="topnav-right">
@@ -23,14 +23,15 @@
   <a href="{{ url_for('auth.about') }}" class="fa-solid fa-question" style="color: #fff;"></a>
   </div>
 </div>
-    <div class = general-description>
-        <img src="images/winebottle.png" alt="Image 1">
+    <section class = blend-suggestions>
         <span>
-            <h2 id="username">{{user.username}}</h2>
-        </span>
-        <button id="blend-test" class="profile-selection">Blend with {{username}}</button>
-        <div class="search-suggestions">
-        <div id="suggestions"></div>
+        <h2 id="username">{{user.username}}</h2>
+      </span>
+        <button id="blend-test" class="blend-button">Create Blend</button>
+
+          <div id="suggestions">
+          </div>
+
         </div>
 
 
@@ -71,8 +72,6 @@
         $.ajax({
           type: 'POST',
           url: 'http://localhost:5000/top_blends',
-          //processData: false,
-          //contentType: false,
           data: formData,
           dataType: 'json',
           success: function(data) {
@@ -83,11 +82,11 @@
                 const name = data[i].name;
                 const rating = data[i].average_rating;
                 const div = document.createElement("div");
+                div.classList.add("wine-box");
                 const wineUrl = "/description/".concat(id);
-                div.innerHTML = `<a href="${wineUrl}" style="font-weight:bold; color:black; text-decoration:none;">${name}, ${rating}</a>`;
+                div.innerHTML = `<a href="${wineUrl}" class="wine-suggestion-content">${name}</br></br>Average Rating: ${rating}</a>`;
                 suggestionResults.appendChild(div);
             }
-            //$("#section-test").text(data).show();
           },
           error: function(xhr, status, error) {
             var err = xhr.responseJSON ? xhr.responseJSON.error : 'You must login before blending with this user';
@@ -97,7 +96,6 @@
       });
     });
     </script>
-
 
 
 </body>
