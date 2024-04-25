@@ -156,79 +156,44 @@ form p a{
   color: #555;
 }
 
-nav{
-  display: flex;
-  padding: 2% 6%;
-  justify-content: space-between;
-  align-items: center;
+.topnav {
+    background-image: url('/static/images/navbar_image.png');
+    overflow: hidden;
 }
-
-.nav-links{
-  flex: 1;
-  text-align: right;
-}
-
-.nav-links ul li{
-  list-style: none;
-  display: inline-block;
-  padding: 8px 12px;
-  position: relative;
-}
-
-.nav-links ul li a {
-  color: #000;
-  text-decoration:  none;
-  font-size: 13px
-}
-
-.nav-links ul li::after{
-  content: '';
-  width: 0%;
-  height: 2px;
-  background: #800020;
-  display: block;
-  margin: auto;
-  transition: 0.5s;
-}
-
-.nav-links ul li:hover::after{
-  width:100%;
-}
-
-.page-selection {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-
-.button-selection {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding-left: 75px;
-    padding-right: 75px;
-    transition: transform 0.3s; 
-}
-
-.button-selection button {
-  padding: 10px 20px;
-  background-color: #800020;
-  border: none;
-  color: #fff;
-  border-radius: 5px;
-  cursor: pointer;
+.topnav img {
+    width: auto;
+    max-width: 150px;
+    height: 150px;
+    float: left;
 
 }
 
-.button-selection:hover {
-    transform: scale(1.1); 
+.topnav a {
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+.topnav a:hover {
+  transform: scale(1.1); 
 }
 
-.button-selection i {
-    font-size: 40px; 
-    margin-bottom: 10px; 
+.topnav-right {
+  float: right;
+}
+
+.topnav-center {
+  margin-top: 50px;
+  max-width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.topnav-center a{
+  padding-left: 75px;
+  padding-right: 75px;
+  font-size: 30px; 
 }
 
 .welcome-section{
@@ -738,12 +703,6 @@ footer {
 
 .profile-container {
     margin-top: 10px; 
-}
-
-.logo {
-    width: auto;
-    max-width: 30px;
-    height: 30px;
 }
 
 .top-intro-quiz h1 {

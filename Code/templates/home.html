@@ -9,38 +9,20 @@
     <title>BlendBud</title>
 </head>
 <body style="background-color:rgba(124, 31, 98, 0.07);">
-    <section class="header">
-        <nav>
-            <div class="logo">
-                <h1>LOGO PLACEHOLDER</h1>
-            </div>
-            <div class="nav-links">
-                <ul>
-                    <li><a href="{{ url_for('auth.login') }}">LOG IN</a></li>
-                    <li><a href="{{ url_for('auth.signup') }}">SIGN UP</a></li>
-                    <li><a href="{{ url_for('auth.profile_page') }}">PROFILE</a></li>
-                </ul>
-            </div>
-        </nav>
-        <div class = "page-selection">
-            <div class = button-selection>
-                <i class="fa-solid fa-house"></i>
-                <a href="{{ url_for('auth.home') }}"><button class="home-selection">Home</button></a>
-            </div>
-            <div class = button-selection>
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <a href="{{ url_for('auth.show_search') }}"><button class="search-selection">Search</button></a>
-            </div>
-            <div class = button-selection>
-                <i class="fa-solid fa-champagne-glasses"></i>
-                <a href="{{ url_for('auth.community') }}"><button class="community-selection">Community</button></a>
-            </div>
-            <div class = button-selection>
-                <i class="fa-solid fa-question"></i>
-                <a href="{{ url_for('auth.about') }}"><button class="about-selection">About Us</button></a>
-            </div>
-        </div>
-    </section>
+<div class="topnav">
+  <img class = "logo" src="{{ url_for('static', filename='images/logo.png') }}" alt="BlendBud Logo">
+  <div class="topnav-right">
+    <a href="{{ url_for('auth.login') }}">LOGIN</a>
+    <a href="{{ url_for('auth.signup') }}">SIGN UP</a>
+    <a href="{{ url_for('auth.profile_page') }}" class="fa-solid fa-user" style="color: #fff; font-size: 20px;" ></a>
+  </div>
+  <div class = "topnav-center">
+  <a href="{{ url_for('auth.home') }}" class="fa-solid fa-house" style="color: #fff;"></a>
+  <a href="{{ url_for('auth.show_search') }}" class="fa-solid fa-magnifying-glass" style="color: #fff;"></a>
+  <a href="{{ url_for('auth.community') }}" class="fa-solid fa-champagne-glasses" style="color: #fff;"></a>
+  <a href="{{ url_for('auth.about') }}" class="fa-solid fa-question" style="color: #fff;"></a>
+  </div>
+</div>
     <section class = "welcome-section">
         <h2>Welcome to BlendBud: Wine made easy</h2>
     </section>
