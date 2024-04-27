@@ -35,12 +35,15 @@
         <h2>Tried {{wine.name}}? Rate it here</h2>
     </div>
     <div class = description-rankings>
-        <h2>{{wine.acidity}}</h2>
-        <h2>{{wine.fizziness}}</h2>
-        <h2>{{wine.intensity}}</h2>
-        <h2>{{wine.sweetness}}</h2>
-        <h2>{{wine.tanin}}</h2>
-        <h2>{{wine.flavor_profile}}</h2>
+        <h2><span class="firstSpan">Acidity:<span class="secondSpan">Wines with higher acidities taste crisp and tart while lower acidity creates a smooth and round taste!</span></span> {{wine.acidity}}</h2>
+        <h2><span class="firstSpan">Fizziness:<span class="secondSpan">Bubbles! Do you like still or sparkling?  Sparkling wine is fizzy while still is, well, still!
+</span></span> {{wine.fizziness}}</h2>
+        <h2><span class="firstSpan">Intensity:<span class="secondSpan">Intensity relates to the look and smell of a wine.  Intense wine tends to be darker and stronger smelling.  The more intense a wine is, the more you’ll be able to distinguish its flavors!
+</span></span> {{wine.intensity}}</h2>
+        <h2><span class="firstSpan">Sweetness:<span class="secondSpan">You know this one!  Sugar left over from grapes after the wine fermentation process makes for sweeter wines.  A lower sweetness rating means the wine is dry and has less residual sugar.
+</span></span> {{wine.sweetness}}</h2>
+        <h2><span class="firstSpan">Tannin:<span class="secondSpan">Tannins are sometimes referred to as pucker power.  Younger wines often have more tannins - making them more bitter and dry.</span></span> {{wine.tanin}}</h2>
+        <h2>Flavor Profile: {{wine.flavor_profile}}</h2>
     </div>
     <div class = review>
         <h2>Average rating: {{wine.average_rating}}</h2>
