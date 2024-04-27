@@ -882,3 +882,28 @@ form p a{
   background: #fefefe;
   border-color: #125688;
 }
+
+.firstSpan {
+  color: rgb(0, 0, 0);
+  font-weight: bold;
+}
+    
+.secondSpan {
+  opacity: .9;
+  font-weight: normal;
+}
+.firstSpan .secondSpan {
+  visibility: hidden;
+  width: 240px;
+  background-color: rgb(131,63,62);
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+}
+    
+.firstSpan:hover .secondSpan {
+  visibility: visible;
+}
