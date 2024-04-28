@@ -32,6 +32,9 @@
         </span>
     </div>
     <div class = rating-description>
+        <br>
+        <br>
+        <br>
         <h2>Tried {{wine.name}}? Rate it here</h2>
     </div>
     <div class = description-rankings>
@@ -42,8 +45,10 @@
 </span></span> {{wine.intensity}}</h2>
         <h2><span class="firstSpan">Sweetness:<span class="secondSpan">You know this one!  Sugar left over from grapes after the wine fermentation process makes for sweeter wines.  A lower sweetness rating means the wine is dry and has less residual sugar.
 </span></span> {{wine.sweetness}}</h2>
-        <h2><span class="firstSpan">Tannin:<span class="secondSpan">Tannins are sometimes referred to as pucker power.  Younger wines often have more tannins - making them more bitter and dry.</span></span> {{wine.tanin}}</h2>
-        <h2>Flavor Profile: {{wine.flavor_profile}}</h2>
+        <h2><span class="firstSpan">Tannin:<span class="secondSpan">Tannins are sometimes referred to as pucker power.  Younger wines often have more tannins - making them more bitter and dry.</span></span> {{wine.tannin}}</h2>
+        <h2>Flavor Profile: {{ ",".join(wine.flavor_profile)}}</h2>
+        <br>
+        <br>
     </div>
     <div class = review>
         <h2>Average rating: {{wine.average_rating}}</h2>
