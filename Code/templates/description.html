@@ -33,30 +33,28 @@
     </div>
     <div class = rating-description>
         <br>
-        <br>
-        <br>
         <h2>Tried {{wine.name}}? Rate it here</h2>
     </div>
     <div class = description-rankings>
-        <h6><span class="firstSpan">Acidity:<span class="secondSpan">Wines with higher acidities taste crisp and tart while lower acidity creates a smooth and round taste!</span></span> {{wine.acidity}}</h6>
-        <h6><span class="firstSpan">Fizziness:<span class="secondSpan">Bubbles! Do you like still or sparkling?  Sparkling wine is fizzy while still is, well, still!
-</span></span> {{wine.fizziness}}</h6>
-        <h6><span class="firstSpan">Intensity:<span class="secondSpan">Intensity relates to the look and smell of a wine.  Intense wine tends to be darker and stronger smelling.  The more intense a wine is, the more you’ll be able to distinguish its flavors!
-</span></span> {{wine.intensity}}</h6>
-        <h6><span class="firstSpan">Sweetness:<span class="secondSpan">You know this one!  Sugar left over from grapes after the wine fermentation process makes for sweeter wines.  A lower sweetness rating means the wine is dry and has less residual sugar.
-</span></span> {{wine.sweetness}}</h6>
-        <h6><span class="firstSpan">Tannin:<span class="secondSpan">Tannins are sometimes referred to as pucker power.  Younger wines often have more tannins - making them more bitter and dry.</span></span> {{wine.tannin}}</h6>
-        <h6>Flavor Profile: {{ ", ".join(wine.flavor_profile)}}</h6>
+        <h4><span class="firstSpan">Acidity:<span class="secondSpan">Wines with higher acidities taste crisp and tart while lower acidity creates a smooth and round taste!</span></span> {{wine.acidity}}</h4>
+        <h4><span class="firstSpan">Fizziness:<span class="secondSpan">Bubbles! Do you like still or sparkling?  Sparkling wine is fizzy while still is, well, still!
+</span></span> {{wine.fizziness}}</h4>
+        <h4><span class="firstSpan">Intensity:<span class="secondSpan">Intensity relates to the look and smell of a wine.  Intense wine tends to be darker and stronger smelling.  The more intense a wine is, the more you’ll be able to distinguish its flavors!
+</span></span> {{wine.intensity}}</h4>
+        <h4><span class="firstSpan">Sweetness:<span class="secondSpan">You know this one!  Sugar left over from grapes after the wine fermentation process makes for sweeter wines.  A lower sweetness rating means the wine is dry and has less residual sugar.
+</span></span> {{wine.sweetness}}</h4>
+        <h4><span class="firstSpan">Tannin:<span class="secondSpan">Tannins are sometimes referred to as pucker power.  Younger wines often have more tannins - making them more bitter and dry.</span></span> {{wine.tannin}}</h4>
+        <h4>Flavor Profile: {{ ", ".join(wine.flavor_profile)}}</h4>
         <br>
         <br>
     </div>
     <div class = review>
-        <h2>Average rating: {{wine.average_rating}}</h2>
-        <h2>Review counts: {{wine.review_count}}</h2>
+        <h4>Average rating: {{wine.average_rating}}</h4>
+        <h4>Review counts: {{wine.review_count}}</h4>
 
     </div>
     <div class = food>
-        <h6>{{food.food_name}}</h6>
+        <h4>Food Pairings: {{food.food_name}}</h4>
 
     </div>
 <footer style ="position: fixed; bottom: 0; width: 100%; margin-top: 30px;">
