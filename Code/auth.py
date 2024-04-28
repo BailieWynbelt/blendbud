@@ -650,7 +650,6 @@ def add_to_favorites():
         mongo.db.preferences.insert_one({
             "user_id": ObjectId(user_id),
             "like_pref": [wine_id],
-            "dis_pref": [],
             "flavor_pref": []
         })
         return jsonify({"message": "Added to favorites"}), 200

@@ -58,7 +58,6 @@
         <div id="output-rating"></div>
         <div class =profile-buttons>
         <button class = "like-button">Like</button>
-        <button class = "dislike-button">Dislike</button>
         </div>
     </div>
 <footer style ="position: fixed; bottom: 0; width: 100%; margin-top: 30px;">
@@ -80,24 +79,6 @@ $(document).ready(function() {
         $.ajax({
             type: 'POST',
             url: '/add_to_favorites',
-            contentType: 'application/json',
-            data: JSON.stringify({ wine_id: wineId }),
-            dataType: 'json',
-            success: function(data) {
-                $('#output-rating').text(data.message).show();
-            },
-            error: function(xhr, status, error) {
-                var err = xhr.responseJSON.error;
-                $('#output-rating').text(err).show();
-            }
-        });
-    });
-
-    $('.dislike-button').on('click', function() {
-        var wineId = "{{ wine._id }}";
-        $.ajax({
-            type: 'POST',
-            url: '/add_to_dislikes',
             contentType: 'application/json',
             data: JSON.stringify({ wine_id: wineId }),
             dataType: 'json',
