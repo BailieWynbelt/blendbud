@@ -117,8 +117,6 @@ def suggest_wine_blend(like_pref1, flav_pref1, like_pref2, flav_pref2):
     # Combining the two users' likes/flavors preferences and deciding to suggest based on wine or flavor:
     like_pref = like_pref1 + like_pref2
     flav_pref = flav_pref1 + flav_pref2
-    print("like_pref:", like_pref)
-    print("flav_pref:", flav_pref)
     if len(like_pref) > 0:
         print("suggesting based on known liked wines")
         return suggest_wine_known_pref(wine_df, like_pref)

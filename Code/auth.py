@@ -802,13 +802,12 @@ def top_blends():
     username2 = request.form.get('username')
     user2 = mongo.db.user.find_one({"username": username2})
     user_id2 =user2['_id']
-
     pref_doc1 = mongo.db.preferences.find_one({"user_id": user_id})
     like_pref1 = pref_doc1.get('like_pref', []) if pref_doc1 else []
-    flav_pref1 = pref_doc1.get('flavor_pref', []) if pref_doc1 else []
+    flav_pref1 = pref_doc1.get('flavor_pref') if pref_doc1 else ''
     pref_doc2 = mongo.db.preferences.find_one({"user_id": user_id2})
     like_pref2 = pref_doc2.get('like_pref', []) if pref_doc2 else []
-    flav_pref2 = pref_doc2.get('flavor_pref', []) if pref_doc2 else []
+    flav_pref2 = pref_doc2.get('flavor_pref') if pref_doc2 else ''
 
     suggestions = suggest.suggest_wine_blend(like_pref1, flav_pref1, like_pref2, flav_pref2)
     to_suggest = get_suggestion_names(suggestions)
