@@ -9,10 +9,12 @@ from bson.objectid import ObjectId
 from bson.json_util import dumps
 import logging
 import suggest as suggest
+import jwt
 
 auth_blueprint = Blueprint('auth', __name__)
 
 search_blueprint = Blueprint('search', __name__)
+
 
 @auth_blueprint.route('/')
 def index():
@@ -574,6 +576,47 @@ def update_preferences():
         })
 
     return jsonify({"message": "Preferences updated successfully", "user_id": str(user_id)}), 200
+
+'''
+10. Add to Dislikes
+URL: /auth/add_to_dislikes
+Method: POST
+URL: /auth/add_to_dislikes
+Description: Adds a wine to the user's favorite list. Requires JWT authentication.
+Request Body:
+{
+  "wine_id": "string"
+}
+'''
+@auth_blueprint.route('/add_to_dislikes', methods=['POST'])
+@jwt_required(optional=False)
+def add_to_dislikes():
+    user_id = get_jwt_identity()
+    data = request.get_json()
+    wine_id = data.get('wine_id')
+
+    if not wine_id:
+        return jsonify({"error": "Wine ID is required"}), 400
+
+    pref_doc = mongo.db.preferences.find_one({"user_id": ObjectId(user_id)})
+
+    if not pref_doc:
+        mongo.db.preferences.insert_one({
+            "user_id": ObjectId(user_id),
+            "like_pref": [],
+            "dis_pref": [wine_id],
+            "flavor_pref": []
+        })
+        return jsonify({"message": "Added to dislikes"}), 200
+
+    if wine_id not in pref_doc.get('dis_pref', []):
+        mongo.db.preferences.update_one(
+            {"user_id": ObjectId(user_id)},
+            {"$addToSet": {"dis_pref": wine_id}}
+        )
+        return jsonify({"message": "Added to dislikes"}), 200
+    else:
+        return jsonify({"message": "Already in dislikes"}), 200
 
 
 '''
