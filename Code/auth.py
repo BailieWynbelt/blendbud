@@ -35,6 +35,7 @@ def wine_description(wine_id):
     else:
         print("food ids: ", food_ids)
         print("food id type: ", type(food_ids))
+        food_ids = list(map(int, food_ids))
         foods = list(mongo.db.food.find({"_id": {"$in": food_ids}}))
     food_names = foods
     if not wine_data:
