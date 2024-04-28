@@ -907,3 +907,39 @@ form p a{
 .firstSpan:hover .secondSpan {
   visibility: visible;
 }
+
+.review h4{
+ padding: 10px;
+ margin-left: 30px;
+}
+
+.description-rankings {
+  margin-right: 75px;
+}
+
+.description-rankings h4{
+  padding: 10px;
+}
+
+.food h4{
+  margin-top: 10px;
+  margin-left: 40px;
+}
+
+.rating-description {
+  margin-top: 150px;
+}
+
+.general-description{
+  margin-left: 30px;
+}
+
+.general-description h1{
+  margin-top: 20px;
+}
+
+.general-description h2{
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+

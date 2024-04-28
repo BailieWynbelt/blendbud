@@ -30,12 +30,6 @@
             <h2>${{wine.price_amount}}</h2>
         </span>
     </div>
-    <div class = rating-description>
-        <br>
-        <h2>Tried {{wine.name}}? Rate it here</h2>
-        <button class = "like-button">Like</button>
-        <button class = "dislike-button">Dislike</button>
-    </div>
     <div class = description-rankings>
         <h4><span class="firstSpan">Acidity:<span class="secondSpan">Wines with higher acidities taste crisp and tart while lower acidity creates a smooth and round taste!</span></span> {{wine.acidity}}</h4>
         <h4><span class="firstSpan">Fizziness:<span class="secondSpan">Bubbles! Do you like still or sparkling?  Sparkling wine is fizzy while still is, well, still!
@@ -57,6 +51,14 @@
     <div class = food>
         <h4>Food Pairings: {{food.food_name}}</h4>
 
+    </div>
+    <div class = rating-description>
+        <br>
+        <h2>Tried {{wine.name}}? Rate it here</h2>
+        <div class =profile-buttons>
+        <button class = "like-button">Like</button>
+        <button class = "dislike-button">Dislike</button>
+        </div>
     </div>
  <div id="output-rating"></div>
 <footer style ="position: fixed; bottom: 0; width: 100%; margin-top: 30px;">
