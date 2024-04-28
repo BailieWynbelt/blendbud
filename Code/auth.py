@@ -758,7 +758,7 @@ def top_wines():
         return jsonify(dumps(to_suggest)), 200
         
     like_pref = pref_doc.get('like_pref', [])
-    flav_pref = pref_doc.get('flav_pref', [])
+    flav_pref = pref_doc.get('flavor_pref').split(",")
     print("DO NOT RECOMMEND THESE ALREADY LIKED: ", like_pref)
     if len(like_pref) > 0:
         print("Suggesting based on liked wines")
@@ -766,8 +766,10 @@ def top_wines():
     elif len(like_pref) == 0:
         print("Suggesting based on liked flavors, or for empty user")
         suggestions = suggest.suggest_wines("flavor", flav_pref)
+        print("suggestions??", suggestions)
 
     to_suggest = get_suggestion_names(suggestions)
+    print("to suggest??", to_suggest)
     return jsonify(dumps(to_suggest)), 200      # returns a list of names and average_ratings rn
 
 def get_suggestion_names(suggestions):
@@ -776,7 +778,6 @@ def get_suggestion_names(suggestions):
     to_suggest = []
     for s in suggestions_list:
         print(s["name"])
-        #to_suggest.append((s["name"], s["average_rating"]))
         to_suggest.append({"id": s["_id"], "name": s["name"], "average_rating": s["average_rating"]})
     return to_suggest
 

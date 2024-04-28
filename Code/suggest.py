@@ -54,9 +54,9 @@ def suggest_wine_known_pref(wine_df, pref_ids):
     df_pref = wine_df.loc[pref_ids]
     wine_numeric = wine_df.select_dtypes(include=np.number)
     wine_numeric = wine_numeric.fillna(wine_numeric.mean())
-    wine_numeric.drop(['fizziness', 'review_count'], axis=1, inplace=True)
+    wine_numeric.drop(['fizziness', 'review_count', 'tannin'], axis=1, inplace=True)
     averages = df_pref.mean(axis=0,skipna=True,numeric_only=True)
-    averages.drop(['fizziness', 'review_count'], inplace=True)
+    averages.drop(['fizziness', 'review_count', 'tannin'], inplace=True)
 
     # Creating the clustering model:
     model = create_clusters(df_pref, wine_df, wine_numeric)
@@ -83,17 +83,11 @@ def suggest_wine_known_pref(wine_df, pref_ids):
 def suggest_wine_generic(wine_df, pref_flavors):
     # Get wines that have flavors matching our user's top flavor:
     print("pref flavors:", pref_flavors)
-    flav_suggestions = pd.DataFrame().reindex_like(wine_df)
+    flav_suggestions = []
     for index, row in wine_df.iterrows():
         if any(flavor in row['flavor_profile'] for flavor in pref_flavors):
-            flav_suggestions.loc[len(flav_suggestions.index)] = row
-    flav_suggestions.dropna(subset=["name"], inplace=True)
-    flav_suggestions.sort_values('price_amount', inplace=True)
-
-    # For now, suggest the five cheapest options
-    top_5 = flav_suggestions.head(5)
-    suggestions = top_5.index.to_list()
-    suggestions = list(map(str, suggestions))
+            flav_suggestions.append(index)
+    suggestions = flav_suggestions[:5]
     print("generic", suggestions)
     return suggestions
 
