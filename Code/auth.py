@@ -30,14 +30,17 @@ def wine_description(wine_id):
     wine_data = mongo.db.wines.find_one({"_id": wine_id})
     food_ids = wine_data.get('food_ids')
     food_ids = [food.strip() for food in food_ids.split(';')]
-    if not food_ids:
-        foods = [] 
-    else:
+    food_names = []
+    if food_ids:
         print("food ids: ", food_ids)
         print("food id type: ", type(food_ids))
         food_ids = list(map(int, food_ids))
         foods = list(mongo.db.food.find({"_id": {"$in": food_ids}}))
-    food_names = foods
+        for food in foods:
+            food_names.append(food["food_name"])
+        
+    print("food names: ", food_names)
+    print("wine data: ", wine_data)
     if not wine_data:
         return jsonify({"error": "Wine not found"}), 404
     return render_template('description.html', wine=wine_data, food =food_names)
