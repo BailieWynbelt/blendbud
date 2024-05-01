@@ -947,3 +947,15 @@ form p a{
   padding: 10px;
 }
 
+.food button {
+  margin-right: 10px;
+  margin-left: 50px;
+  margin-bottom: 30px;
+  margin-top: 20px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  background-color: #800020;
+  color: #fff;
+  cursor: pointer;
+}
